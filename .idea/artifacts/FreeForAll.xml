@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FreeForAll">
+    <output-path>$PROJECT_DIR$/..</output-path>
+    <root id="archive" name="FreeForAll.jar">
+      <element id="module-output" name="FreeForAll" />
+    </root>
+  </artifact>
+</component>

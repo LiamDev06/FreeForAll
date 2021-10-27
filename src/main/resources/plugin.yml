@@ -1,4 +1,4 @@
 name: HybridFreeForAll
-main: net.hybrid.ffa.FreeForAllPlugin
-version: 0.0.1
+main: com.hybrid.ffa.FreeForAllPlugin
+version: 0.0.3
 authors: ["LiamHBest", "Hybrid Development"]

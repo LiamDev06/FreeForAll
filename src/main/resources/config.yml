@@ -1,0 +1,61 @@
+# Prestige (calculated by the Total EXP amount earned lifetime)
+# Prestiges unlocks access to certain perks, cosmetics and shop things. Total EXP will reset with every prestige
+prestige:
+  prestige1:
+    displayName: "&2P&ar&bo"
+    tag: "&2[&2P&aR&bO]"
+    totalExpRequired: 50000
+  prestige2:
+    displayName: "&cG&6ra&end&ama&bst&der"
+    tag: "&c[G&6RA&eND&aMA&bST&dER]"
+    totalExpRequired: 65000
+  prestige3:
+    displayName: "&e&lGod"
+    tag: "&8&l[&e&lGOD&8&l]"
+    totalExpRequired: 80000
+  prestige4:
+    displayName: "&9&kL&2&lHybrid&f&lMaster&9&kL"
+    tag: "&8&l[&9&kL&2&lHybrid&f&lMASTER&9&kL&8&l]"
+    totalExpRequired: 100000
+# Game Options
+gameOptions:
+  coins:
+    kill: 10
+    winstreakOf_5: 20
+    winstreakOf_10: 50
+    winstreakOf_20: 100
+  kitExp:
+    kill: 100
+    winstreakOf_5: 200
+    winstreakOf_10: 500
+    winstreakOf_20: 1200
+# Spawn Locations
+spawnLocations:
+  winterLoc:
+    world: ffa_main
+    x: 151.5
+    y: 88
+    z: 189.5
+    yaw: 135
+    pitch: 0
+  desertLoc:
+    world: ffa_main
+    x: 27.5
+    y: 88
+    z: 65.5
+    yaw: -45
+    pitch: 0
+  jungleLoc:
+    world: ffa_main
+    x: 27.5
+    y: 88
+    z: 189.5
+    yaw: -135
+    pitch: 0
+  plainsLoc:
+    world: ffa_main
+    x: 151.5
+    y: 88
+    z: 65.5
+    yaw: 45
+    pitch: 0

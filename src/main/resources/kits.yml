@@ -1,0 +1,181 @@
+swordsman:
+  displayName: "Swordsman"
+  unlockedByDefault: true
+  cost: 0
+  1:
+    expCost: 0
+    items:
+      DIAMOND_SWORD:
+        amount: 1
+        displayName: ""
+        slot: 0
+        enchantments: ""
+        itemFlags: ""
+      IRON_SWORD:
+        amount: 1
+        displayName: "&6&lStrong Sword [LIAM TYPE]"
+        slot: 4
+        enchantments:
+          DAMAGE_ALL: 1
+        itemFlags:
+          - HIDE_ENCHANTS
+  10:
+    expCost: 1000
+    items:
+      DIAMOND_SWORD: 1
+  25:
+    expCost: 5000
+    items:
+      DIAMOND_SWORD: 1
+  40:
+    expCost: 6000
+    items:
+      DIAMOND_SWORD: 1
+  75:
+    expCost: 8500
+    items:
+      DIAMOND_SWORD: 1
+  100:
+    expCost: 10000
+    items:
+      DIAMOND_SWORD: 1
+archer:
+  displayName: "Archer"
+  unlockedByDefault: true
+  cost: 0
+  1:
+    expCost: 0
+    items:
+      DIAMOND_SWORD: 1
+  10:
+    expCost: 1000
+    items:
+      DIAMOND_SWORD: 1
+  25:
+    expCost: 5000
+    items:
+      DIAMOND_SWORD: 1
+  40:
+    expCost: 6000
+    items:
+      DIAMOND_SWORD: 1
+  75:
+    expCost: 8500
+    items:
+      DIAMOND_SWORD: 1
+  100:
+    expCost: 10000
+    items:
+      DIAMOND_SWORD: 1
+samurai:
+  displayName: "Samurai"
+  unlockedByDefault: true
+  cost: 0
+  1:
+    expCost: 0
+    items:
+      DIAMOND_SWORD: 1
+  10:
+    expCost: 1000
+    items:
+      DIAMOND_SWORD: 1
+  25:
+    expCost: 5000
+    items:
+      DIAMOND_SWORD: 1
+  40:
+    expCost: 6000
+    items:
+      DIAMOND_SWORD: 1
+  75:
+    expCost: 8500
+    items:
+      DIAMOND_SWORD: 1
+  100:
+    expCost: 10000
+    items:
+      DIAMOND_SWORD: 1
+tank:
+  displayName: "Tank"
+  unlockedByDefault: true
+  cost: 0
+  1:
+    expCost: 0
+    items:
+      DIAMOND_SWORD: 1
+  10:
+    expCost: 1000
+    items:
+      DIAMOND_SWORD: 1
+  25:
+    expCost: 5000
+    items:
+      DIAMOND_SWORD: 1
+  40:
+    expCost: 6000
+    items:
+      DIAMOND_SWORD: 1
+  75:
+    expCost: 8500
+    items:
+      DIAMOND_SWORD: 1
+  100:
+    expCost: 10000
+    items:
+      DIAMOND_SWORD: 1
+wizard:
+  displayName: "Wizard"
+  unlockedByDefault: false
+  cost: 500
+  1:
+    expCost: 0
+    items:
+      DIAMOND_SWORD: 1
+  10:
+    expCost: 1000
+    items:
+      DIAMOND_SWORD: 1
+  25:
+    expCost: 5000
+    items:
+      DIAMOND_SWORD: 1
+  40:
+    expCost: 6000
+    items:
+      DIAMOND_SWORD: 1
+  75:
+    expCost: 8500
+    items:
+      DIAMOND_SWORD: 1
+  100:
+    expCost: 10000
+    items:
+      DIAMOND_SWORD: 1
+well_rounded:
+  displayName: "Well Rounded"
+  unlockedByDefault: false
+  cost: 1100
+  1:
+    expCost: 0
+    items:
+      DIAMOND_SWORD: 1
+  10:
+    expCost: 1000
+    items:
+      DIAMOND_SWORD: 1
+  25:
+    expCost: 5000
+    items:
+      DIAMOND_SWORD: 1
+  40:
+    expCost: 6000
+    items:
+      DIAMOND_SWORD: 1
+  75:
+    expCost: 8500
+    items:
+      DIAMOND_SWORD: 1
+  100:
+    expCost: 10000
+    items:
+      DIAMOND_SWORD: 1

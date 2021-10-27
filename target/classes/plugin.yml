@@ -1,0 +1,4 @@
+name: HybridFreeForAll
+main: com.hybrid.ffa.FreeForAllPlugin
+version: 0.0.3
+authors: ["LiamHBest", "Hybrid Development"]
