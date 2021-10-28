@@ -4,6 +4,7 @@ import com.hybrid.ffa.commands.KitCommand;
 import com.hybrid.ffa.listeners.GameMapListener;
 import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.listeners.JoinLeaveListener;
+import com.hybrid.ffa.managers.KitManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
@@ -15,6 +16,7 @@ public class FreeForAllPlugin extends JavaPlugin {
 
     private static FreeForAllPlugin INSTANCE;
     private GameMapManager gameMapManager;
+    private KitManager kitManager;
     private File kitsConfigFile;
     private FileConfiguration kitsConfig;
 
@@ -26,6 +28,7 @@ public class FreeForAllPlugin extends JavaPlugin {
         new KitCommand();
 
         gameMapManager = new GameMapManager();
+        kitManager = new KitManager();
         kitsConfigFile = new File(getDataFolder(), "kits.yml");
         kitsConfig = YamlConfiguration.loadConfiguration(kitsConfigFile);
 
@@ -56,6 +59,10 @@ public class FreeForAllPlugin extends JavaPlugin {
 
     public FileConfiguration getKitsConfig() {
         return kitsConfig;
+    }
+
+    public KitManager getKitManager() {
+        return kitManager;
     }
 
 }
