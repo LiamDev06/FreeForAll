@@ -12,9 +12,13 @@ public class GameMapManager {
     // Returns if the player is in the arena or still just in the "kit selection stage"
     private final ArrayList<UUID> isInArena;
 
+    // Returns the players kill streak
+    private final HashMap<UUID, Integer> killStreak;
+
     public GameMapManager() {
         lastKitUsed = new HashMap<>();
         isInArena = new ArrayList<>();
+        killStreak = new HashMap<>();
     }
 
     public HashMap<UUID, String> getLastKitUsed() {
@@ -23,6 +27,10 @@ public class GameMapManager {
 
     public ArrayList<UUID> getIsInArena() {
         return isInArena;
+    }
+
+    public HashMap<UUID, Integer> getKillStreak() {
+        return killStreak;
     }
 
 }

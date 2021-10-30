@@ -49,7 +49,7 @@ public class FreeForAllPlugin extends JavaPlugin {
         return INSTANCE;
     }
 
-    public GameMapManager gameMapManager() {
+    public GameMapManager getGameMapManager() {
         return gameMapManager;
     }
 

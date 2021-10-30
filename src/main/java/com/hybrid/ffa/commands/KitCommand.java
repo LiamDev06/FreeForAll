@@ -16,7 +16,7 @@ public class KitCommand extends PlayerCommand {
     @Override
     public void onPlayerCommand(Player player, String[] args) {
 
-        if (FreeForAllPlugin.getInstance().gameMapManager().getIsInArena().contains(player.getUniqueId())) {
+        if (FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().contains(player.getUniqueId())) {
             player.sendMessage(CC.translate("&c&lCURRENTLY PLAYING! &cYou cannot change kit while currently playing."));
             player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 10, -2);
             return;
@@ -36,11 +36,14 @@ public class KitCommand extends PlayerCommand {
             value = false;
         }
 
-        for (String s : args) {
-            kitName = s.toUpperCase() + "_";
+        if (value) {
+            for (String s : args) {
+                kitName = s.toUpperCase() + "_";
+            }
+
+            kitName = kitName.substring(0, kitName.length() - 1);
         }
 
-        if (value) kitName = kitName.substring(0, kitName.length() - 1);
         PlayerKit playerKit;
 
         try {

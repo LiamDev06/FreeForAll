@@ -1,10 +1,10 @@
 package com.hybrid.ffa.listeners;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.managers.KitManager;
+import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.utils.LocationUtil;
 import com.hybrid.ffa.managers.ScoreboardManager;
 import com.hybrid.ffa.utils.HotbarItems;
-import com.hybrid.ffa.utils.LocationUtil;
 import net.hybrid.core.utility.CC;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -21,6 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class JoinLeaveListener implements Listener {
 
@@ -31,6 +32,8 @@ public class JoinLeaveListener implements Listener {
 
         player.closeInventory();
         player.getInventory().clear();
+
+        new User(player.getUniqueId());
 
         player.setHealthScale(20);
         player.setHealth(20);
@@ -51,7 +54,7 @@ public class JoinLeaveListener implements Listener {
         player.getInventory().setItem(2, HotbarItems.getCosmetics());
         player.getInventory().setItem(8, HotbarItems.changeLocation());
 
-        if (FreeForAllPlugin.getInstance().gameMapManager().getLastKitUsed().containsKey(player.getUniqueId())) {
+        if (FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().containsKey(player.getUniqueId())) {
             player.getInventory().setItem(4, HotbarItems.getLastKit(player));
         }
 
@@ -106,6 +109,11 @@ public class JoinLeaveListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
+        final UUID uuid = event.getPlayer().getUniqueId();
+
+        FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().remove(uuid);
+        FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().remove(uuid);
+        FreeForAllPlugin.getInstance().getGameMapManager().getKillStreak().remove(uuid);
     }
 
 }
