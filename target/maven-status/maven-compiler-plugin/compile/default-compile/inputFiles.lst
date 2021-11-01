@@ -1,11 +1,14 @@
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\FreeForAllPlugin.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\commands\KitCommand.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\utils\PlayerKit.java
+C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\commands\admin\ReloadConfigCommand.java
+C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\commands\admin\ReloadPlayerDataCommand.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\managers\GameMapManager.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\listeners\JoinLeaveListener.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\data\User.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\utils\HotbarItems.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\menus\ChangeSpawnMenu.java
+C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\commands\admin\ReloadKitsConfigCommand.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\listeners\GameMapListener.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\managers\ScoreboardManager.java
 C:\Users\liamh\OneDrive\Skrivbord\New Hybrid\Development\FreeForAll\src\main\java\com\hybrid\ffa\commands\SpawnLocationCommand.java

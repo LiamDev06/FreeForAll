@@ -1,6 +1,7 @@
 package com.hybrid.ffa.managers;
 
 import com.hybrid.ffa.FreeForAllPlugin;
+import com.hybrid.ffa.data.User;
 import com.hybrid.ffa.utils.PlayerKit;
 import net.hybrid.core.utility.CC;
 import org.bukkit.Material;
@@ -14,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class KitManager {
 
@@ -57,7 +57,13 @@ public class KitManager {
 
             if (config.getStringList(path + s.toUpperCase() + ".lore") != null && !config.get(path + s.toUpperCase() + ".lore").equals("")) {
                 ItemMeta meta = item.getItemMeta();
-                List<String> lore = new ArrayList<>(meta.getLore());
+                ArrayList<String> lore;
+
+                if (meta.hasLore()) {
+                    lore = new ArrayList<>(meta.getLore());
+                } else {
+                    lore = new ArrayList<>();
+                }
 
                 for (String line : config.getStringList(path + s.toUpperCase() + ".lore")) {
                     lore.add(line.replace("&", "§"));
@@ -66,22 +72,48 @@ public class KitManager {
                 meta.setLore(lore);
             }
 
-            player.getInventory().setItem(config.getInt(path + s.toUpperCase() + ".slot"), item);
+            if (item.getType().name().endsWith("_HELMET")) {
+                player.getInventory().setHelmet(item);
+
+            } else if (item.getType().name().endsWith("_CHESTPLATE")) {
+                player.getInventory().setChestplate(item);
+
+            } else if (item.getType().name().endsWith("_LEGGINGS")) {
+                player.getInventory().setLeggings(item);
+
+            } else if (item.getType().name().endsWith("_BOOTS")) {
+                player.getInventory().setBoots(item);
+
+            } else {
+                player.getInventory().setItem(config.getInt(path + s.toUpperCase() + ".slot"), item);
+            }
         }
     }
 
     public void loadKitFancy(Player player, PlayerKit playerKit, int level) {
         player.closeInventory();
+        player.getInventory().clear();
+
+        player.getInventory().setHelmet(new ItemStack(Material.AIR));
+        player.getInventory().setChestplate(new ItemStack(Material.AIR));
+        player.getInventory().setLeggings(new ItemStack(Material.AIR));
+        player.getInventory().setBoots(new ItemStack(Material.AIR));
+
         player.setLevel(level);
+        int expRequired = FreeForAllPlugin.getInstance().getGameMapManager().getExpRequiredForLevelUp(playerKit);
+        player.setExp(new User(player.getUniqueId()).getKitExp(playerKit).floatValue() / (float) expRequired);
+
         player.playSound(player.getLocation(), Sound.NOTE_PIANO, 12, 2);
         player.playSound(player.getLocation(), Sound.NOTE_SNARE_DRUM, 8, 2);
         player.playSound(player.getLocation(), Sound.CLICK, 8, 1);
 
+        loadKitFromConfig(player, playerKit.name(), level);
+        FreeForAllPlugin.getInstance().getGameMapManager().getCurrentKit().put(player.getUniqueId(), playerKit);
+        FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().put(player.getUniqueId(), playerKit);
+
         player.sendMessage(CC.translate(
                 "&a&lKIT LOADED! &aYou loaded the kit &6" + playerKit.getDisplayName() + "&a. Now go out and fight!"
         ));
-
-        loadKitFromConfig(player, playerKit.name(), level);
     }
 }
 

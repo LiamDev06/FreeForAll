@@ -2,6 +2,7 @@ package com.hybrid.ffa.data;
 
 import com.hybrid.ffa.FreeForAllPlugin;
 import com.hybrid.ffa.utils.PlayerKit;
+import net.hybrid.core.utility.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,7 +15,7 @@ public class User {
 
     private final UUID uuid;
     private final File userFile;
-    private final FileConfiguration userConfig;
+    private FileConfiguration userConfig;
 
     public User(UUID uuid) {
         this.uuid = uuid;
@@ -118,7 +119,7 @@ public class User {
         return userConfig.getInt("stats.lifetimeDeaths");
     }
 
-    public double getLifetimeExp() {
+    public Double getLifetimeExp() {
         return userConfig.getDouble("stats.lifetimeExp");
     }
 
@@ -158,8 +159,12 @@ public class User {
         return userConfig.getInt("kits." + kit.name().toLowerCase() + ".level");
     }
 
-    public double getKitExp(PlayerKit kit) {
+    public Double getKitExp(PlayerKit kit) {
         return userConfig.getDouble("kits." + kit.name().toLowerCase() + ".exp");
+    }
+
+    public String getPrestige() {
+        return CC.translate("&c(Coming Soon)");
     }
 
     private void save() {
@@ -168,6 +173,10 @@ public class User {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public void reloadConfig() {
+        userConfig = YamlConfiguration.loadConfiguration(userFile);
     }
 
 }

@@ -22,21 +22,21 @@ public class ChangeSpawnMenu {
 
                         .add(BookUtil.TextBuilder.of("➟ §7§lWinter")
                                 .onHover(BookUtil.HoverAction.showText(CC.translate("&7Click to choose")))
-                                .onClick(BookUtil.ClickAction.runCommand("/spawnlocation desert"))
+                                .onClick(BookUtil.ClickAction.runCommand("/spawnlocation winter"))
                                 .build())
 
                         .newLine().newLine()
 
                         .add(BookUtil.TextBuilder.of("➟ §2§lJungle")
                                 .onHover(BookUtil.HoverAction.showText(CC.translate("&7Click to choose")))
-                                .onClick(BookUtil.ClickAction.runCommand("/spawnlocation desert"))
+                                .onClick(BookUtil.ClickAction.runCommand("/spawnlocation jungle"))
                                 .build())
 
                         .newLine().newLine()
 
                         .add(BookUtil.TextBuilder.of("➟ §a§lPlains")
                                 .onHover(BookUtil.HoverAction.showText(CC.translate("&7Click to choose")))
-                                .onClick(BookUtil.ClickAction.runCommand("/spawnlocation desert"))
+                                .onClick(BookUtil.ClickAction.runCommand("/spawnlocation plains"))
                                 .build())
 
                         .build()
