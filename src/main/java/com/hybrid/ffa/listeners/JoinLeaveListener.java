@@ -1,11 +1,11 @@
 package com.hybrid.ffa.listeners;
 
-import com.hybrid.ffa.FreeForAllPlugin;
 import com.hybrid.ffa.data.User;
 import com.hybrid.ffa.utils.LocationUtil;
-import com.hybrid.ffa.managers.ScoreboardManager;
+import com.hybrid.ffa.FreeForAllPlugin;
 import com.hybrid.ffa.utils.HotbarItems;
 import net.hybrid.core.utility.CC;
+import net.hybrid.core.utility.ScoreHelper;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,7 +42,6 @@ public class JoinLeaveListener implements Listener {
         player.setAllowFlight(false);
         player.setGameMode(GameMode.ADVENTURE);
         player.playSound(player.getLocation(), Sound.LEVEL_UP, 12, 2);
-        ScoreboardManager.createScoreboard(player);
 
         player.getInventory().setHelmet(new ItemStack(Material.AIR));
         player.getInventory().setChestplate(new ItemStack(Material.AIR));
@@ -114,6 +113,10 @@ public class JoinLeaveListener implements Listener {
         FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().remove(uuid);
         FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().remove(uuid);
         FreeForAllPlugin.getInstance().getGameMapManager().getKillStreak().remove(uuid);
+
+        if (ScoreHelper.hasScore(event.getPlayer())) {
+            ScoreHelper.removeScore(event.getPlayer());
+        }
     }
 
 }

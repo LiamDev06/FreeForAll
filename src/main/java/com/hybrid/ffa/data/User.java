@@ -2,6 +2,7 @@ package com.hybrid.ffa.data;
 
 import com.hybrid.ffa.FreeForAllPlugin;
 import com.hybrid.ffa.utils.PlayerKit;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -21,6 +22,7 @@ public class User {
         userFile = new File(FreeForAllPlugin.getInstance().getDataFolder() + "/PlayerData", uuid.toString() + ".yml");
         userConfig = YamlConfiguration.loadConfiguration(userFile);
         if (!userFile.exists()) {
+            userConfig.set("playerName", Bukkit.getOfflinePlayer(uuid).getName());
             userConfig.set("uuid", uuid.toString());
             userConfig.set("coins", 0);
 
@@ -130,6 +132,10 @@ public class User {
 
     public int getLongestKillStreak() {
         return userConfig.getInt("stats.lifetimeLongestKillStreak");
+    }
+
+    public String getKD() {
+        return String.format("%.1f", (double) getKills() / getDeaths());
     }
 
     public void setKitLevel(PlayerKit kit, int level) {

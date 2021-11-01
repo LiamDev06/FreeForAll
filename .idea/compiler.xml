@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="FreeForAll" target="7" />
+      <module name="FreeForAll" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

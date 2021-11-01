@@ -1,10 +1,11 @@
 package com.hybrid.ffa;
 
 import com.hybrid.ffa.commands.KitCommand;
-import com.hybrid.ffa.listeners.GameMapListener;
-import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.listeners.JoinLeaveListener;
+import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.managers.KitManager;
+import com.hybrid.ffa.commands.SpawnLocationCommand;
+import com.hybrid.ffa.listeners.GameMapListener;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
@@ -26,6 +27,7 @@ public class FreeForAllPlugin extends JavaPlugin {
         INSTANCE = this;
 
         new KitCommand();
+        new SpawnLocationCommand();
 
         gameMapManager = new GameMapManager();
         kitManager = new KitManager();
