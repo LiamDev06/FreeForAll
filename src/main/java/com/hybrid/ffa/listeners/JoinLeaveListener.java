@@ -1,6 +1,7 @@
 package com.hybrid.ffa.listeners;
 
 import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.utils.LocationUtil;
 import com.hybrid.ffa.managers.ScoreboardManager;
 import com.hybrid.ffa.FreeForAllPlugin;
@@ -36,6 +37,8 @@ public class JoinLeaveListener implements Listener {
 
         new User(player.getUniqueId());
 
+        player.setLevel(0);
+        player.setExp(0);
         player.setHealthScale(20);
         player.setHealth(20);
         player.setFoodLevel(20);
@@ -83,28 +86,36 @@ public class JoinLeaveListener implements Listener {
 
         player.teleport(spawnLocation);
 
+        GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
+        manager.getSpawnLocation().remove(player.getUniqueId());
+        manager.getKillStreak().put(player.getUniqueId(), 0);
+
         if (pos == 0) {
             player.sendMessage(CC.translate("&8&m---------------------------------------------------------"));
             player.sendMessage(CC.translate("&6&kjhg &7A random spawn location was chosen, you got &a" + "Desert" + "&7! &6&kjhg"));
             player.sendMessage(CC.translate("&8&m---------------------------------------------------------"));
+            manager.getSpawnLocation().put(player.getUniqueId(), "desert");
         }
 
         if (pos == 1) {
             player.sendMessage(CC.translate("&8&m---------------------------------------------------------"));
             player.sendMessage(CC.translate("&6&kjhg &7A random spawn location was chosen, you got &a" + "Jungle" + "&7! &6&kjhg"));
             player.sendMessage(CC.translate("&8&m---------------------------------------------------------"));
+            manager.getSpawnLocation().put(player.getUniqueId(), "jungle");
         }
 
         if (pos == 2) {
             player.sendMessage(CC.translate("&8&m---------------------------------------------------------"));
             player.sendMessage(CC.translate("&6&kjhg &7A random spawn location was chosen, you got &a" + "Plains" + "&7! &6&kjhg"));
             player.sendMessage(CC.translate("&8&m---------------------------------------------------------"));
+            manager.getSpawnLocation().put(player.getUniqueId(), "plains");
         }
 
         if (pos == 3) {
             player.sendMessage(CC.translate("&8&m---------------------------------------------------------"));
             player.sendMessage(CC.translate("&6&kjhg &7A random spawn location was chosen, you got &a" + "Winter" + "&7! &6&kjhg"));
             player.sendMessage(CC.translate("&8&m---------------------------------------------------------"));
+            manager.getSpawnLocation().put(player.getUniqueId(), "winter");
         }
     }
 
@@ -117,14 +128,14 @@ public class JoinLeaveListener implements Listener {
         FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().remove(uuid);
         FreeForAllPlugin.getInstance().getGameMapManager().getKillStreak().remove(uuid);
         FreeForAllPlugin.getInstance().getGameMapManager().getCurrentKit().remove(uuid);
-
-        if (ScoreHelper.hasScore(event.getPlayer())) {
-            ScoreHelper.removeScore(event.getPlayer());
-        }
+        FreeForAllPlugin.getInstance().getGameMapManager().getSpawnLocation().remove(uuid);
 
         if (ScoreboardManager.hasId(event.getPlayer().getUniqueId())) {
             ScoreboardManager.stop(event.getPlayer().getUniqueId());
         }
-    }
 
+        if (ScoreHelper.hasScore(event.getPlayer())) {
+            ScoreHelper.removeScore(event.getPlayer());
+        }
+    }
 }

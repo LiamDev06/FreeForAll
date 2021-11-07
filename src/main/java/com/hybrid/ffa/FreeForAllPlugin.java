@@ -1,15 +1,18 @@
 package com.hybrid.ffa;
 
 import com.hybrid.ffa.commands.KitCommand;
-import com.hybrid.ffa.commands.admin.ReloadConfigCommand;
-import com.hybrid.ffa.commands.admin.ReloadKitsConfigCommand;
+import com.hybrid.ffa.commands.admin.*;
 import com.hybrid.ffa.listeners.JoinLeaveListener;
+import com.hybrid.ffa.listeners.KitLevelUpdate;
+import com.hybrid.ffa.listeners.NPCListener;
+import com.hybrid.ffa.managers.DeathManager;
 import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.managers.KitManager;
 import com.hybrid.ffa.managers.ScoreboardManager;
-import com.hybrid.ffa.commands.admin.ReloadPlayerDataCommand;
 import com.hybrid.ffa.commands.SpawnLocationCommand;
 import com.hybrid.ffa.listeners.GameMapListener;
+import com.hybrid.ffa.menus.KitMenu;
+import net.hybrid.core.utility.actionbar.ActionbarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,6 +42,12 @@ public class FreeForAllPlugin extends JavaPlugin {
         new ReloadConfigCommand();
         new ReloadKitsConfigCommand();
         new ReloadPlayerDataCommand();
+        new WipePlayerCommand();
+        new CoinsCommand();
+        new KillsCommand();
+        new DeathsCommand();
+        new SetKitLevel();
+        new CheckKillstreakCommand();
 
         gameMapManager = new GameMapManager();
         kitManager = new KitManager();
@@ -48,6 +57,13 @@ public class FreeForAllPlugin extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new JoinLeaveListener(), this);
         pm.registerEvents(new GameMapListener(), this);
+        pm.registerEvents(new NPCListener(), this);
+        pm.registerEvents(new KitMenu(), this);
+        pm.registerEvents(new DeathManager(), this);
+        pm.registerEvents(new KitLevelUpdate(), this);
+
+        ActionbarAPI.init();
+        GameMapListener.init();
 
         new BukkitRunnable() {
 

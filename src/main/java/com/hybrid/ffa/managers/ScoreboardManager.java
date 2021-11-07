@@ -116,7 +116,7 @@ public class ScoreboardManager {
                     case 38:
                     case 39:
                     case 40:
-                        scoreHelper.setTitle("&d&lFREE FOR ALL");
+                            scoreHelper.setTitle("&d&lFREE FOR ALL");
                         break;
                 }
                 count++;
@@ -179,10 +179,18 @@ public class ScoreboardManager {
             }
 
             if (gameMapManager.getCurrentKit().containsKey(player.getUniqueId())) {
-                helper.setSlot(7, "&bKit Level: &f" + user.getKitLevel(gameMapManager.getCurrentKit().get(player.getUniqueId())));
-                helper.setSlot(6, "&bKit EXP: &f" + user.getKitExp(gameMapManager.getCurrentKit().get(player.getUniqueId())).intValue() + "/" + gameMapManager.getExpRequiredForLevelUp(
-                        gameMapManager.getCurrentKit().get(player.getUniqueId())
-                ));
+                if (user.getKitLevel(gameMapManager.getCurrentKit().get(player.getUniqueId())) == 100) {
+                    helper.setSlot(7, "&bKit Level: &f" + user.getKitLevel(gameMapManager.getCurrentKit().get(player.getUniqueId())) + " &8(Max LVL)");
+                    helper.setSlot(6, "&bKit EXP: &fN/A &8(Max LVL)");
+                } else {
+                    helper.setSlot(7, "&bKit Level: &f" + user.getKitLevel(gameMapManager.getCurrentKit().get(player.getUniqueId())));
+                    helper.setSlot(6, "&bKit EXP: &f" + user.getKitExp(gameMapManager.getCurrentKit().get(player.getUniqueId())).intValue() + "/" + gameMapManager.getExpMaxRequired(
+                            player.getUniqueId(), gameMapManager.getCurrentKit().get(player.getUniqueId())
+                    ));
+                }
+            } else {
+                helper.setSlot(7, "&bKit Level: &f[N/A]");
+                helper.setSlot(6, "&bKit EXP: &f[N/A]");
             }
 
             helper.setSlot(4, "&bPrestige: " + user.getPrestige());

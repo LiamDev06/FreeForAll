@@ -1,6 +1,8 @@
 package com.hybrid.ffa.commands;
 
 import com.hybrid.ffa.FreeForAllPlugin;
+import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.menus.KitMenu;
 import com.hybrid.ffa.utils.PlayerKit;
 import net.hybrid.core.utility.CC;
 import net.hybrid.core.utility.PlayerCommand;
@@ -22,8 +24,9 @@ public class KitCommand extends PlayerCommand {
         }
 
         if (args.length == 0) {
-            player.sendMessage(CC.translate("&c&lERROR! &cMissing arguments, valid usage is: /kit <kit>"));
-            player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 10, -2);
+            player.sendMessage(CC.translate("&7Opening kit menu..."));
+            KitMenu.openKitMenu(player);
+            player.playSound(player.getLocation(), Sound.WOOD_CLICK, 8, 1);
             return;
         }
 
@@ -53,7 +56,14 @@ public class KitCommand extends PlayerCommand {
             return;
         }
 
-        FreeForAllPlugin.getInstance().getKitManager().loadKitFancy(player, playerKit, 1);
+        User user = new User(player.getUniqueId());
+        if (!user.hasUnlockedKit(playerKit)) {
+            player.sendMessage(CC.translate("&c&lNOT UNLOCKED! &cYou have not unlocked the &6" + playerKit.getDisplayName() + " &ckit yet!"));
+            return;
+        }
+
+        FreeForAllPlugin.getInstance().getKitManager().loadKitFancy(player, playerKit,
+                user.getKitLevel(playerKit));
     }
 }
 

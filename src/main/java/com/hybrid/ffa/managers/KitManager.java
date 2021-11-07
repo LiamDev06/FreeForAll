@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 
@@ -20,7 +23,8 @@ public class KitManager {
 
     public void loadKitFromConfig(Player player, String kitName, int level) {
         FileConfiguration config = FreeForAllPlugin.getInstance().getKitsConfig();
-        final String path = kitName.toLowerCase().replace(" ", "_") + "." + level + ".items.";
+
+        final String path = kitName.toLowerCase().replace(" ", "_") + "." + getClosestLevel(level) + ".items.";
         ConfigurationSection itemSection = config.getConfigurationSection(path.substring(0, path.length() - 1));
 
         for (String s : itemSection.getKeys(false)) {
@@ -55,6 +59,30 @@ public class KitManager {
                 item.setItemMeta(meta);
             }
 
+            if (config.get(path + s.toUpperCase() + ".potionEffects") != null) {
+                PotionMeta meta = (PotionMeta) item.getItemMeta();
+                ConfigurationSection typeSection = config.getConfigurationSection(path + s.toUpperCase() + ".potionEffects");
+                ArrayList<PotionEffect> effects = new ArrayList<>();
+
+                for (String potion : typeSection.getKeys(false)) {
+                    int duration = config.getInt(path + s.toUpperCase() + ".potionEffects." + potion + ".duration");
+                    int amp = config.getInt(path + s.toUpperCase() + ".potionEffects." + potion + ".amplifier");
+                    boolean ambient = config.getBoolean(path + s.toUpperCase() + ".potionEffects." + potion + ".ambient");
+                    boolean particles = config.getBoolean(path + s.toUpperCase() + ".potionEffects." + potion + ".particles");
+
+                    effects.add(new PotionEffect(PotionEffectType.getByName(potion.toUpperCase())
+                            , duration, amp, ambient, particles));
+                }
+
+                meta.setMainEffect(effects.get(0).getType());
+
+                for (PotionEffect effect : effects) {
+                    meta.addCustomEffect(effect, true);
+                }
+
+                item.setItemMeta(meta);
+            }
+
             if (config.getStringList(path + s.toUpperCase() + ".lore") != null && !config.get(path + s.toUpperCase() + ".lore").equals("")) {
                 ItemMeta meta = item.getItemMeta();
                 ArrayList<String> lore;
@@ -70,6 +98,7 @@ public class KitManager {
                 }
 
                 meta.setLore(lore);
+                item.setItemMeta(meta);
             }
 
             if (item.getType().name().endsWith("_HELMET")) {
@@ -100,12 +129,39 @@ public class KitManager {
         player.getInventory().setBoots(new ItemStack(Material.AIR));
 
         player.setLevel(level);
-        int expRequired = FreeForAllPlugin.getInstance().getGameMapManager().getExpRequiredForLevelUp(playerKit);
+        int expRequired = FreeForAllPlugin.getInstance().getGameMapManager().getExpMaxRequired(player.getUniqueId(), playerKit);
         player.setExp(new User(player.getUniqueId()).getKitExp(playerKit).floatValue() / (float) expRequired);
 
         player.playSound(player.getLocation(), Sound.NOTE_PIANO, 12, 2);
         player.playSound(player.getLocation(), Sound.NOTE_SNARE_DRUM, 8, 2);
         player.playSound(player.getLocation(), Sound.CLICK, 8, 1);
+
+        FileConfiguration config = FreeForAllPlugin.getInstance().getKitsConfig();
+        int near = getClosestLevel(level);
+
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
+
+        if (config.getConfigurationSection(playerKit.name().toLowerCase() + "." + near + ".potionBuffs") != null) {
+            ConfigurationSection section = config.getConfigurationSection(playerKit.name().toLowerCase() + "." + near + ".potionBuffs");
+            String path = playerKit.name().toLowerCase() + "." + near + ".potionBuffs.";
+
+            for (String buff : section.getKeys(false)) {
+                int amp = config.getInt(path + buff + ".amp");
+                boolean perm = config.getBoolean(path + buff + ".perm");
+
+                int duration = 3600;
+                if (perm) {
+                    duration = 999999;
+                }
+
+                player.addPotionEffect(new PotionEffect(
+                        PotionEffectType.getByName(buff),
+                        duration, amp
+                ));
+            }
+        }
 
         loadKitFromConfig(player, playerKit.name(), level);
         FreeForAllPlugin.getInstance().getGameMapManager().getCurrentKit().put(player.getUniqueId(), playerKit);
@@ -114,6 +170,30 @@ public class KitManager {
         player.sendMessage(CC.translate(
                 "&a&lKIT LOADED! &aYou loaded the kit &6" + playerKit.getDisplayName() + "&a. Now go out and fight!"
         ));
+    }
+
+    public static int getClosestLevel(int fromLevel) {
+        if (fromLevel < 10) {
+            return 1;
+        }
+
+        if (fromLevel < 25) {
+            return 10;
+        }
+
+        if (fromLevel < 40) {
+            return 25;
+        }
+
+        if (fromLevel < 75) {
+            return 40;
+        }
+
+        if (fromLevel < 100) {
+            return 75;
+        }
+
+        return 100;
     }
 }
 

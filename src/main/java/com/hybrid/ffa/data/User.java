@@ -1,6 +1,7 @@
 package com.hybrid.ffa.data;
 
 import com.hybrid.ffa.FreeForAllPlugin;
+import com.hybrid.ffa.utils.KitLevelUpdateEvent;
 import com.hybrid.ffa.utils.PlayerKit;
 import net.hybrid.core.utility.CC;
 import org.bukkit.Bukkit;
@@ -34,21 +35,27 @@ public class User {
             userConfig.set("stats.lifetimeArrowsHit", 0);
             userConfig.set("stats.lifetimeLongestKillStreak", 0);
 
+            userConfig.set("kits.swordsman.unlocked", true);
             userConfig.set("kits.swordsman.level", 1);
             userConfig.set("kits.swordsman.exp", 0);
 
+            userConfig.set("kits.archer.unlocked", true);
             userConfig.set("kits.archer.level", 1);
             userConfig.set("kits.archer.exp", 0);
 
+            userConfig.set("kits.samurai.unlocked", true);
             userConfig.set("kits.samurai.level", 1);
             userConfig.set("kits.samurai.exp", 0);
 
+            userConfig.set("kits.tank.unlocked", true);
             userConfig.set("kits.tank.level", 1);
             userConfig.set("kits.tank.exp", 0);
 
+            userConfig.set("kits.wizard.unlocked", false);
             userConfig.set("kits.wizard.level", 1);
             userConfig.set("kits.wizard.exp", 0);
 
+            userConfig.set("kits.well_rounded.unlocked", false);
             userConfig.set("kits.well_rounded.level", 1);
             userConfig.set("kits.well_rounded.exp", 0);
 
@@ -77,6 +84,16 @@ public class User {
         save();
     }
 
+    public void addCoins(int value) {
+        userConfig.set("coins", getCoins() + value);
+        save();
+    }
+
+    public void removeCoins(int value) {
+        userConfig.set("coins", getCoins() - value);
+        save();
+    }
+
     public int getCoins() {
         return userConfig.getInt("coins");
     }
@@ -93,6 +110,11 @@ public class User {
 
     public void setLifetimeExp(double value) {
         userConfig.set("stats.lifetimeExp", value);
+        save();
+    }
+
+    public void addLifetimeExp(double value) {
+        userConfig.set("stats.lifetimeExp", getLifetimeExp() + value);
         save();
     }
 
@@ -140,19 +162,34 @@ public class User {
     }
 
     public void setKitLevel(PlayerKit kit, int level) {
+        int before = getKitLevel(kit);
+
         userConfig.set("kits." + kit.name().toLowerCase() + ".level", level);
+        save();
+
+        KitLevelUpdateEvent event = new KitLevelUpdateEvent(level, before, uuid, kit);
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     public void setKitExp(PlayerKit kit, double exp) {
-        userConfig.set("kits." + kit.name().toLowerCase() + ".level", exp);
+        userConfig.set("kits." + kit.name().toLowerCase() + ".exp", exp);
+        save();
     }
 
     public void addKitExp(PlayerKit kit, double value) {
-        userConfig.set("kits." + kit.name().toLowerCase() + ".level", getKitExp(kit) + value);
+        userConfig.set("kits." + kit.name().toLowerCase() + ".exp", getKitExp(kit) + value);
+        save();
     }
 
     public void removeKitExp(PlayerKit kit, double value) {
-        userConfig.set("kits." + kit.name().toLowerCase() + ".level", getKitExp(kit) - value);
+        userConfig.set("kits." + kit.name().toLowerCase() + ".exp", getKitExp(kit) - value);
+        save();
+    }
+
+    public void resetExp(PlayerKit kit) {
+        int required = FreeForAllPlugin.getInstance().getGameMapManager().getExpMaxRequired(uuid, kit);
+        userConfig.set("kits." + kit.name().toLowerCase() + ".exp", getKitExp(kit) - required);
+        save();
     }
 
     public int getKitLevel(PlayerKit kit) {
@@ -165,6 +202,10 @@ public class User {
 
     public String getPrestige() {
         return CC.translate("&c(Coming Soon)");
+    }
+
+    public boolean hasUnlockedKit(PlayerKit playerKit) {
+        return userConfig.getBoolean("kits." + playerKit.name().toLowerCase() + ".unlocked");
     }
 
     private void save() {
