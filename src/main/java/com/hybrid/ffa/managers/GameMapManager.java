@@ -1,7 +1,7 @@
 package com.hybrid.ffa.managers;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.utils.PlayerKit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -51,7 +51,7 @@ public class GameMapManager {
     }
 
     public int getExpMaxRequired(UUID uuid, PlayerKit playerKit) {
-        User user = new User(uuid);
+        CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(uuid);
         int level = user.getKitLevel(playerKit);
         int closest = getClosestLevelUp(level);
 

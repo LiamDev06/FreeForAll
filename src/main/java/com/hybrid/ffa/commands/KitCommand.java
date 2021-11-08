@@ -1,7 +1,7 @@
 package com.hybrid.ffa.commands;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.menus.KitMenu;
 import com.hybrid.ffa.utils.PlayerKit;
 import net.hybrid.core.utility.CC;
@@ -56,7 +56,7 @@ public class KitCommand extends PlayerCommand {
             return;
         }
 
-        User user = new User(player.getUniqueId());
+        CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId());
         if (!user.hasUnlockedKit(playerKit)) {
             player.sendMessage(CC.translate("&c&lNOT UNLOCKED! &cYou have not unlocked the &6" + playerKit.getDisplayName() + " &ckit yet!"));
             return;

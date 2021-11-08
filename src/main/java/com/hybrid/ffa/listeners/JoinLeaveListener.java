@@ -1,6 +1,5 @@
 package com.hybrid.ffa.listeners;
 
-import com.hybrid.ffa.data.User;
 import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.utils.LocationUtil;
 import com.hybrid.ffa.managers.ScoreboardManager;
@@ -18,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class JoinLeaveListener implements Listener {
         player.closeInventory();
         player.getInventory().clear();
 
-        new User(player.getUniqueId());
+        FreeForAllPlugin.getInstance().getUserManager().loadPlayerToCache(player.getUniqueId());
 
         player.setLevel(0);
         player.setExp(0);
@@ -48,6 +48,10 @@ public class JoinLeaveListener implements Listener {
         player.playSound(player.getLocation(), Sound.LEVEL_UP, 12, 2);
         ScoreboardManager.createScoreboard(player);
         ScoreboardManager.start(player);
+
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+             player.removePotionEffect(effect.getType());
+        }
 
         player.getInventory().setHelmet(new ItemStack(Material.AIR));
         player.getInventory().setChestplate(new ItemStack(Material.AIR));
@@ -123,6 +127,8 @@ public class JoinLeaveListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
         final UUID uuid = event.getPlayer().getUniqueId();
+
+        FreeForAllPlugin.getInstance().getUserManager().offLoadPlayerFromCache(event.getPlayer().getUniqueId());
 
         FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().remove(uuid);
         FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().remove(uuid);

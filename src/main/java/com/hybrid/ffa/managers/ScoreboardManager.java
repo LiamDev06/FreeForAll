@@ -1,7 +1,7 @@
 package com.hybrid.ffa.managers;
 
-import com.hybrid.ffa.data.User;
 import com.hybrid.ffa.FreeForAllPlugin;
+import com.hybrid.ffa.data.CachedUser;
 import net.hybrid.core.utility.CC;
 import net.hybrid.core.utility.HybridPlayer;
 import net.hybrid.core.utility.ScoreHelper;
@@ -127,7 +127,7 @@ public class ScoreboardManager {
     public static void createScoreboard(Player player) {
         ScoreHelper helper = ScoreHelper.createScore(player);
         HybridPlayer hybridPlayer = new HybridPlayer(player.getUniqueId());
-        User user = new User(player.getUniqueId());
+        CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId());
 
         helper.setTitle("&e&lFREE FOR ALL");
         helper.setSlot(15, "");
@@ -151,7 +151,7 @@ public class ScoreboardManager {
         helper.setSlot(7, "&bKit Level: &f[N/A]");
         helper.setSlot(6, "&bKit EXP: &f[N/A]");
         helper.setSlot(5, "");
-        helper.setSlot(4, "&bPrestige: " + user.getPrestige());
+        helper.setSlot(4, "&bPrestige: " + user.getPrestige().getDisplayName());
         helper.setSlot(3, "&bRank: " + hybridPlayer.getRankManager().getRank().getDisplayName());
         helper.setSlot(2, "");
         helper.setSlot(1, "&ehybridplays.com");
@@ -159,7 +159,7 @@ public class ScoreboardManager {
 
     public static void updateScoreboard(Player player) {
         HybridPlayer hybridPlayer = new HybridPlayer(player.getUniqueId());
-        User user = new User(player.getUniqueId());
+        CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId());
 
         if (ScoreHelper.hasScore(player)) {
             ScoreHelper helper = ScoreHelper.getByPlayer(player);
@@ -193,7 +193,7 @@ public class ScoreboardManager {
                 helper.setSlot(6, "&bKit EXP: &f[N/A]");
             }
 
-            helper.setSlot(4, "&bPrestige: " + user.getPrestige());
+            helper.setSlot(4, "&bPrestige: " + user.getPrestige().getDisplayName());
             helper.setSlot(3, "&bRank: " + hybridPlayer.getRankManager().getRank().getDisplayName());
         }
     }

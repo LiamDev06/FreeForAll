@@ -1,7 +1,7 @@
 package com.hybrid.ffa.menus;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.utils.PlayerKit;
 import net.hybrid.core.utility.CC;
@@ -12,6 +12,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -26,7 +27,7 @@ public class KitMenu implements Listener {
 
     public static void openKitMenu(Player player) {
         Inventory inv = Bukkit.createInventory(null, 54,"Kits");
-        User user = new User(player.getUniqueId());
+        CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId());
         GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
 
         ItemStack swordsman = new ItemStack(Material.IRON_SWORD);

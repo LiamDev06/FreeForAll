@@ -1,6 +1,7 @@
 package com.hybrid.ffa.commands.admin;
 
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.FreeForAllPlugin;
+import com.hybrid.ffa.data.UserManager;
 import net.hybrid.core.data.Language;
 import net.hybrid.core.utility.HybridPlayer;
 import net.hybrid.core.utility.PlayerCommand;
@@ -36,8 +37,17 @@ public class ReloadPlayerDataCommand extends PlayerCommand {
             return;
         }
 
+        UserManager userManager = FreeForAllPlugin.getInstance().getUserManager();
+
+        if (!userManager.hasPlayedFFABefore(offlinePlayer.getUniqueId())) {
+            hybridPlayer.sendMessage("&c&lNEVER PLAYED! &cThis player has never played Free For All before!");
+            return;
+        }
+
         try {
-            new User(offlinePlayer.getUniqueId()).reloadConfig();
+            userManager.offLoadPlayerFromCache(player.getUniqueId());
+            userManager.loadPlayerToCache(player.getUniqueId());
+
             SoundManager.playSound(player, "NOTE_PIANO");
             hybridPlayer.sendMessage("&a&lSUCCESSFUL RELOAD! &aThe player data config has been successfully reloaded without any errors for player &6" + offlinePlayer.getName() + "&a!");
 

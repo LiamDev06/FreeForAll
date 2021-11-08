@@ -1,7 +1,7 @@
 package com.hybrid.ffa.managers;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.utils.PlayerKit;
 import net.hybrid.core.utility.CC;
 import org.bukkit.Material;
@@ -130,7 +130,9 @@ public class KitManager {
 
         player.setLevel(level);
         int expRequired = FreeForAllPlugin.getInstance().getGameMapManager().getExpMaxRequired(player.getUniqueId(), playerKit);
-        player.setExp(new User(player.getUniqueId()).getKitExp(playerKit).floatValue() / (float) expRequired);
+
+        CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId());
+        player.setExp(user.getKitExp(playerKit).floatValue() / (float) expRequired);
 
         player.playSound(player.getLocation(), Sound.NOTE_PIANO, 12, 2);
         player.playSound(player.getLocation(), Sound.NOTE_SNARE_DRUM, 8, 2);

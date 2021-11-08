@@ -1,7 +1,8 @@
 package com.hybrid.ffa.commands.admin;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.data.CachedUser;
+import com.hybrid.ffa.data.UserManager;
 import net.hybrid.core.data.Language;
 import net.hybrid.core.utility.HybridPlayer;
 import net.hybrid.core.utility.PlayerCommand;
@@ -33,10 +34,18 @@ public class CheckKillstreakCommand extends PlayerCommand {
         HybridPlayer hybridTarget = new HybridPlayer(offlinePlayer.getUniqueId());
 
         if (!hybridTarget.hasJoinedServerBefore()) {
+            hybridPlayer.sendMessage("&c&lNEVER JOINED! &cThis player has never played on Hybrid before!");
             return;
         }
 
-        User user = new User(offlinePlayer.getUniqueId());
+        UserManager userManager = FreeForAllPlugin.getInstance().getUserManager();
+
+        if (!userManager.hasPlayedFFABefore(offlinePlayer.getUniqueId())) {
+            hybridPlayer.sendMessage("&c&lNEVER PLAYED! &cThis player has never played Free For All before!");
+            return;
+        }
+
+        CachedUser user = userManager.getCachedUser(offlinePlayer.getUniqueId());
         player.playSound(player.getLocation(), Sound.NOTE_PLING, 10, 2);
         hybridPlayer.sendMessage("&aLifetime Longest Killstreak: &6" + user.getLongestKillStreak());
         hybridPlayer.sendMessage("&aCurrent Killstreak: &6" +

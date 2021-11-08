@@ -1,6 +1,8 @@
 package com.hybrid.ffa.commands.admin;
 
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.FreeForAllPlugin;
+import com.hybrid.ffa.data.CachedUser;
+import com.hybrid.ffa.data.UserManager;
 import net.hybrid.core.data.Language;
 import net.hybrid.core.utility.HybridPlayer;
 import net.hybrid.core.utility.PlayerCommand;
@@ -35,7 +37,14 @@ public class KillsCommand extends PlayerCommand {
             return;
         }
 
-        User userTarget = new User(offlinePlayer.getUniqueId());
+        UserManager userManager = FreeForAllPlugin.getInstance().getUserManager();
+
+        if (!userManager.hasPlayedFFABefore(offlinePlayer.getUniqueId())) {
+            hybridPlayer.sendMessage("&c&lNEVER PLAYED! &cThis player has never played Free For All before!");
+            return;
+        }
+
+        CachedUser userTarget = userManager.getCachedUser(offlinePlayer.getUniqueId());
         String who = hybridTarget.getRankManager().getRank().getPrefixSpace() + offlinePlayer.getName();
 
         if (args.length == 1) {
@@ -81,7 +90,7 @@ public class KillsCommand extends PlayerCommand {
                 }
 
                 userTarget.setKills(userTarget.getKills() - value);
-                hybridPlayer.sendMessage("&a&lKILLS REMOVED! &aYou removed &b" + value + " &akills from " + who + "&a! They now have &6" + userTarget.getCoins() + "&a kills!");
+                hybridPlayer.sendMessage("&a&lKILLS REMOVED! &aYou removed &b" + value + " &akills from " + who + "&a! They now have &6" + userTarget.getKills() + "&a kills!");
                 SoundManager.playSound(player, "NOTE_PLING");
 
             } else {
@@ -102,7 +111,7 @@ public class KillsCommand extends PlayerCommand {
                 }
 
                 userTarget.setKills(userTarget.getKills() + value);
-                hybridPlayer.sendMessage("&a&lKILLS ADDED! &aYou added &b" + value + " &akills to " + who + "&a! They now have &6" + userTarget.getCoins() + "&a kills!");
+                hybridPlayer.sendMessage("&a&lKILLS ADDED! &aYou added &b" + value + " &akills to " + who + "&a! They now have &6" + userTarget.getKills() + "&a kills!");
                 SoundManager.playSound(player, "NOTE_PLING");
 
             } else {

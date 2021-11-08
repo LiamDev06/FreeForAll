@@ -2,7 +2,7 @@ package com.hybrid.ffa.listeners;
 
 import com.connorlinfoot.titleapi.TitleAPI;
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.utils.KitLevelUpdateEvent;
 import net.hybrid.core.utility.CC;
@@ -12,13 +12,12 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class KitLevelUpdate implements Listener {
 
     @EventHandler
     public void onKitLevelUpdate(KitLevelUpdateEvent event) {
-        User user = new User(event.getUuid());
+        CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(event.getUuid());
         GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
 
         Player player = Bukkit.getPlayer(event.getUuid());

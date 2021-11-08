@@ -2,7 +2,7 @@ package com.hybrid.ffa.managers;
 
 import com.connorlinfoot.titleapi.TitleAPI;
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.utils.HotbarItems;
 import com.hybrid.ffa.utils.LocationUtil;
 import com.hybrid.ffa.utils.PlayerKit;
@@ -44,7 +44,7 @@ public class DeathManager implements Listener {
 
         final Player died = (Player) event.getEntity();
         HybridPlayer hybridDied = new HybridPlayer(died.getUniqueId());
-        User userDied = new User(died.getUniqueId());
+        CachedUser userDied = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(died.getUniqueId());
 
         userDied.setDeaths(userDied.getDeaths() + 1);
 
@@ -83,7 +83,7 @@ public class DeathManager implements Listener {
         if (event.getDamager() instanceof Player) {
             Player killer = (Player) event.getDamager();
             HybridPlayer hybridKiller = new HybridPlayer(killer.getUniqueId());
-            User userKilled = new User(killer.getUniqueId());
+            CachedUser userKilled = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(killer.getUniqueId());
             PlayerKit kit = manager.getCurrentKit().get(killer.getUniqueId());
             hybridKiller.getNetworkLevelingManager().setExp(
                     hybridKiller.getNetworkLevelingManager().getExp() + 10
@@ -187,14 +187,15 @@ public class DeathManager implements Listener {
                 killer.setExp(9.999f);
             } else {
                int expRequired = FreeForAllPlugin.getInstance().getGameMapManager().getExpMaxRequired(killer.getUniqueId(), kit);
-                killer.setExp(new User(killer.getUniqueId()).getKitExp(kit).floatValue() / (float) expRequired);
+                killer.setExp(userKilled.getKitExp(kit).floatValue() / (float) expRequired);
             }
+
         }
 
         else if (event.getDamager() instanceof Arrow) {
             Player killer = (Player) ((Arrow) event.getDamager()).getShooter();
             HybridPlayer hybridKiller = new HybridPlayer(killer.getUniqueId());
-            User userKilled = new User(killer.getUniqueId());
+            CachedUser userKilled = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(killer.getUniqueId());
             PlayerKit kit = manager.getCurrentKit().get(killer.getUniqueId());
             int addExp;
 
@@ -286,8 +287,9 @@ public class DeathManager implements Listener {
                 killer.setExp(9.999f);
             } else {
                 int expRequired = FreeForAllPlugin.getInstance().getGameMapManager().getExpMaxRequired(killer.getUniqueId(), kit);
-                killer.setExp(new User(killer.getUniqueId()).getKitExp(kit).floatValue() / (float) expRequired);
+                killer.setExp(userKilled.getKitExp(kit).floatValue() / (float) expRequired);
             }
+
         } else {
             hybridDied.sendMessage("&eYou died.");
 

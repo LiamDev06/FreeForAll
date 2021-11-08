@@ -1,7 +1,7 @@
 package com.hybrid.ffa.listeners;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.utils.HotbarItems;
 import com.hybrid.ffa.utils.LocationUtil;
@@ -367,7 +367,7 @@ public class GameMapListener implements Listener {
             if (displayName.equalsIgnoreCase(HotbarItems.getLastKit(player).getItemMeta().getDisplayName())) {
                 FreeForAllPlugin.getInstance().getKitManager().loadKitFancy(
                         player, FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().get(player.getUniqueId()),
-                        new User(player.getUniqueId()).getKitLevel(FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().get(player.getUniqueId()))
+                        FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId()).getKitLevel(FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().get(player.getUniqueId()))
                 );
                 return;
             }
@@ -387,13 +387,13 @@ public class GameMapListener implements Listener {
             HybridPlayer hybridShooter = new HybridPlayer(shooter.getUniqueId());
             HybridPlayer hybridHit = new HybridPlayer(hit.getUniqueId());
 
-            User userShooter = new User(shooter.getUniqueId());
+            CachedUser userShooter = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(shooter.getUniqueId());
 
             if (!(event.getFinalDamage() >= hit.getHealth())) {
                 new BukkitRunnable(){
                     @Override
                     public void run(){
-                        userShooter.setArrowsHit(userShooter.getArrowsHit() + 1);
+                        userShooter.setLifetimeArrowsHit(userShooter.getLifetimeArrowsHit() + 1);
                         shooter.playSound(shooter.getLocation(), Sound.NOTE_PIANO, 12, 2);
 
                         int amount = (int) hit.getHealth();
@@ -413,9 +413,9 @@ public class GameMapListener implements Listener {
     public void onBowShot(EntityShootBowEvent event) {
         if (event.getEntity() instanceof Player && event.getBow().getType() == Material.BOW) {
             Player player = (Player) event.getEntity();
-            User user = new User(player.getUniqueId());
+            CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId());
 
-            user.setArrowsShot(user.getArrowsShot() + 1);
+            user.setLifetimeArrowsShot(user.getLifetimeArrowsShot() + 1);
         }
     }
 

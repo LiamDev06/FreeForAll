@@ -1,7 +1,8 @@
 package com.hybrid.ffa.commands.admin;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.User;
+import com.hybrid.ffa.data.CachedUser;
+import com.hybrid.ffa.data.UserManager;
 import com.hybrid.ffa.managers.GameMapManager;
 import net.hybrid.core.data.Language;
 import net.hybrid.core.utility.HybridPlayer;
@@ -37,19 +38,20 @@ public class WipePlayerCommand extends PlayerCommand {
             return;
         }
 
-        User user = new User(offlinePlayer.getUniqueId());
-        if (user.getUserFile().delete()) {
-            new User(offlinePlayer.getUniqueId());
+        UserManager userManager = FreeForAllPlugin.getInstance().getUserManager();
 
-            GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
-            manager.getKillStreak().replace(offlinePlayer.getUniqueId(), 0);
-            manager.getLastKitUsed().remove(offlinePlayer.getUniqueId());
-
-            hybridPlayer.sendMessage("&a&lUSER WIPED! &aYou just thanos snapped &6" + offlinePlayer.getName() + "&a's statistics from earth. Be gone...");
-            SoundManager.playSound(player, "NOTE_PLING");
-        } else {
-            hybridPlayer.sendMessage("&c&lWIPE FAILED! &cSomething went wrong and " + offlinePlayer.getName() + " could not be wiped!");
+        if (!userManager.hasPlayedFFABefore(offlinePlayer.getUniqueId())) {
+            hybridPlayer.sendMessage("&c&lNEVER PLAYED! &cThis player has never played Free For All before!");
+            return;
         }
+
+        userManager.getCachedUsers().replace(offlinePlayer.getUniqueId(), new CachedUser(offlinePlayer.getUniqueId()));
+        GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
+        manager.getKillStreak().replace(offlinePlayer.getUniqueId(), 0);
+        manager.getLastKitUsed().remove(offlinePlayer.getUniqueId());
+
+        hybridPlayer.sendMessage("&a&lUSER WIPED! &aYou just thanos snapped &6" + offlinePlayer.getName() + "&a's statistics from earth. Be gone...");
+        SoundManager.playSound(player, "NOTE_PLING");
     }
 }
 
