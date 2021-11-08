@@ -2,6 +2,7 @@ package com.hybrid.ffa;
 
 import com.hybrid.ffa.commands.KitCommand;
 import com.hybrid.ffa.commands.admin.*;
+import com.hybrid.ffa.data.UserManager;
 import com.hybrid.ffa.listeners.JoinLeaveListener;
 import com.hybrid.ffa.listeners.KitLevelUpdate;
 import com.hybrid.ffa.listeners.NPCListener;
@@ -27,6 +28,7 @@ public class FreeForAllPlugin extends JavaPlugin {
 
     private static FreeForAllPlugin INSTANCE;
     private GameMapManager gameMapManager;
+    private UserManager userManager;
     private KitManager kitManager;
     private File kitsConfigFile;
     private FileConfiguration kitsConfig;
@@ -49,6 +51,7 @@ public class FreeForAllPlugin extends JavaPlugin {
         new SetKitLevel();
         new CheckKillstreakCommand();
 
+        userManager = new UserManager(this);
         gameMapManager = new GameMapManager();
         kitManager = new KitManager();
         kitsConfigFile = new File(getDataFolder(), "kits.yml");
@@ -83,6 +86,8 @@ public class FreeForAllPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        userManager.offLoadPlayersFromCache();
+
         INSTANCE = null;
         getLogger().info("Hybrid Free For All plugin has been disabled.");
     }
@@ -105,6 +110,10 @@ public class FreeForAllPlugin extends JavaPlugin {
 
     public KitManager getKitManager() {
         return kitManager;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
     }
 
     public void reloadKitsConfig() {

@@ -21,8 +21,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Collections;
 
 public class DeathManager implements Listener {
 
@@ -31,7 +34,10 @@ public class DeathManager implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         if (!(event.getFinalDamage() >= ((Player) event.getEntity()).getHealth())) return;
         event.setCancelled(true);
-        if (event.getEntity().getUniqueId() == event.getDamager().getUniqueId()) return;
+        if (event.getEntity().getUniqueId() == event.getDamager().getUniqueId()) {
+            event.setCancelled(true);
+            return;
+        }
 
         GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
         FileConfiguration config = FreeForAllPlugin.getInstance().getConfig();
@@ -86,6 +92,14 @@ public class DeathManager implements Listener {
             killer.playSound(killer.getLocation(), Sound.NOTE_PLING, 10, 2);
             killer.playSound(killer.getLocation(), Sound.NOTE_PIANO, 10, 2);
             killer.playSound(killer.getLocation(), Sound.ANVIL_BREAK, 10, 2);
+
+            ItemStack goldenApple = new ItemStack(Material.GOLDEN_APPLE, 1);
+            ItemMeta goldenMeta = goldenApple.getItemMeta();
+            goldenMeta.setDisplayName(CC.translate("&2Survivor Apple"));
+            goldenMeta.setLore(Collections.singletonList(CC.translate("&7Earned for each kill!")));
+            goldenApple.setItemMeta(goldenMeta);
+
+            killer.getInventory().addItem(goldenApple);
 
             userKilled.setKills(userKilled.getKills() + 1);
             manager.getKillStreak().replace(killer.getUniqueId(), manager.getKillStreak().get(killer.getUniqueId()) + 1);

@@ -43,7 +43,7 @@ public class ScoreboardManager {
 
             @Override
             public void run() {
-                if (!hasId(uuid)) {
+                if (!hasId(uuid) && player != null) {
                     setId(uuid, taskId);
                 }
 
