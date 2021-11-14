@@ -9,6 +9,7 @@ import net.hybrid.core.commands.admin.KaboomCommand;
 import net.hybrid.core.utility.CC;
 import net.hybrid.core.utility.HybridPlayer;
 import net.hybrid.core.utility.SoundManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,9 +25,13 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class GameMapListener implements Listener {
@@ -101,6 +106,8 @@ public class GameMapListener implements Listener {
                 || cause == EntityDamageEvent.DamageCause.LAVA) {
             event.setCancelled(true);
         }
+
+
     }
 
     @EventHandler
@@ -416,6 +423,24 @@ public class GameMapListener implements Listener {
             CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId());
 
             user.setLifetimeArrowsShot(user.getLifetimeArrowsShot() + 1);
+        }
+    }
+
+    @EventHandler @SuppressWarnings("deprecation")
+    public void onItemConsume(PlayerItemConsumeEvent event) {
+        final Player player = event.getPlayer();
+
+        if (event.getItem().getTypeId() == 373) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+
+                    for (ItemStack item : player.getInventory().getContents()) {
+                        if (item != null && item.getTypeId() == 374) player.getInventory().removeItem(item);
+                    }
+
+                }
+            }.runTaskLater(FreeForAllPlugin.getInstance(), 1L);
         }
     }
 

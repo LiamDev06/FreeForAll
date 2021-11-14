@@ -6,7 +6,6 @@ import net.hybrid.core.utility.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -82,21 +81,6 @@ public class UserManager {
         CachedUser cachedUser = new CachedUser(uuid);
 
         if (!file.exists()) {
-            cachedUser.setCoins(0);
-            cachedUser.setPrestige(Prestige.COMING_SOON);
-            cachedUser.setKills(0);
-            cachedUser.setDeaths(0);
-            cachedUser.setLifetimeExp(0);
-            cachedUser.setLifetimeArrowsShot(0);
-            cachedUser.setLifetimeArrowsHit(0);
-            cachedUser.setLongestKillStreak(0);
-
-            for (PlayerKit kit : PlayerKit.values()) {
-                 cachedUser.setKitUnlocked(kit, kit.isUnlockedByDefault());
-                 cachedUser.setKitLevelSilent(kit, 1);
-                 cachedUser.setKitExp(kit, 0);
-            }
-
             cachedUser.updateCache();
             return;
         }

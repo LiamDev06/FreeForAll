@@ -179,7 +179,7 @@ public class ScoreboardManager {
             }
 
             if (gameMapManager.getCurrentKit().containsKey(player.getUniqueId())) {
-                if (user.getKitLevel(gameMapManager.getCurrentKit().get(player.getUniqueId())) == 100) {
+                if (user.getKitLevel(gameMapManager.getCurrentKit().get(player.getUniqueId())) >= 100) {
                     helper.setSlot(7, "&bKit Level: &f" + user.getKitLevel(gameMapManager.getCurrentKit().get(player.getUniqueId())) + " &8(Max LVL)");
                     helper.setSlot(6, "&bKit EXP: &fN/A &8(Max LVL)");
                 } else {

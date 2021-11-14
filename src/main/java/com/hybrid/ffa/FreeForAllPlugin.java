@@ -43,13 +43,14 @@ public class FreeForAllPlugin extends JavaPlugin {
 
         new ReloadConfigCommand();
         new ReloadKitsConfigCommand();
-        new ReloadPlayerDataCommand();
+        new LoadPlayerDataFromConfigCommand();
         new WipePlayerCommand();
         new CoinsCommand();
         new KillsCommand();
         new DeathsCommand();
         new SetKitLevel();
         new CheckKillstreakCommand();
+        new UploadPlayerDataToConfigCommand();
 
         userManager = new UserManager(this);
         gameMapManager = new GameMapManager();

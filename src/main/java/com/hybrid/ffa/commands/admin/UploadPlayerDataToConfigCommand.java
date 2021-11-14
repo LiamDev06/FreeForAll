@@ -10,10 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-public class ReloadPlayerDataCommand extends PlayerCommand {
+public class UploadPlayerDataToConfigCommand extends PlayerCommand {
 
-    public ReloadPlayerDataCommand() {
-        super("reloadplayerdata");
+    public UploadPlayerDataToConfigCommand() {
+        super("uploadplayerdata");
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ReloadPlayerDataCommand extends PlayerCommand {
         }
 
         if (args.length == 0) {
-            hybridPlayer.sendMessage("&c&lMISSING ARGUMENTS! &cYou need to specify a player, use /reloadplayerdata <player>");
+            hybridPlayer.sendMessage("&c&lMISSING ARGUMENTS! &cYou need to specify a player, use /uploadplayerdata <player>");
             SoundManager.playSound(player, "ENDERMAN_TELEPORT");
             return;
         }
@@ -49,7 +49,7 @@ public class ReloadPlayerDataCommand extends PlayerCommand {
             userManager.loadPlayerToCache(player.getUniqueId());
 
             SoundManager.playSound(player, "NOTE_PIANO");
-            hybridPlayer.sendMessage("&a&lSUCCESSFUL RELOAD! &aThe player data config has been successfully reloaded without any errors for player &6" + offlinePlayer.getName() + "&a!");
+            hybridPlayer.sendMessage("&a&lSUCCESSFUL UPLOAD! &aYou uploaded the player data from &6" + offlinePlayer.getName() + "'s&a to the config without errors&a!");
 
         } catch (Exception exception) {
             hybridPlayer.sendMessage("&c&lRELOAD ERROR! &cSomething went wrong while trying to reload the player data config for player &6" + offlinePlayer.getName() + "&c!");

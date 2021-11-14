@@ -19,13 +19,13 @@ public class SpawnLocationCommand extends PlayerCommand {
 
     @Override
     public void onPlayerCommand(Player player, String[] args) {
-        if (FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().contains(player.getUniqueId())) {
+        GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
+
+        if (manager.getIsInArena().contains(player.getUniqueId())) {
             player.sendMessage(CC.translate("&c&lCURRENTLY PLAYING! &cYou cannot change kit while currently playing."));
             player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 10, -2);
             return;
         }
-
-        GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
 
         if (args.length == 0) {
             SoundManager.playSound(player, "CLICK");
