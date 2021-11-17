@@ -12,12 +12,12 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
@@ -361,9 +361,16 @@ public class KitMenu implements Listener {
             }
 
             if (displayName.equalsIgnoreCase("Close")) {
-                player.closeInventory();
-                player.updateInventory();
-                player.playSound(player.getLocation(), Sound.NOTE_BASS, 8, 1);
+                new BukkitRunnable() {
+
+                    @Override
+                    public void run() {
+                        player.closeInventory();
+                        player.updateInventory();
+                        player.playSound(player.getLocation(), Sound.NOTE_BASS, 8, 1);
+                    }
+
+                }.runTaskLater(FreeForAllPlugin.getInstance(), 1);
             }
         }
     }

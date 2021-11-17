@@ -9,6 +9,7 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -31,10 +32,12 @@ public class KitManager {
             ItemStack item = new ItemStack(Material.valueOf(s.toUpperCase()),
                     config.getInt(path + s.toUpperCase() + ".amount"));
 
-            ItemMeta firstMeta = item.getItemMeta();
-            firstMeta.spigot().setUnbreakable(true);
-            firstMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-            item.setItemMeta(firstMeta);
+            if (item.getMaxStackSize() == 1) {
+                ItemMeta firstMeta = item.getItemMeta();
+                firstMeta.spigot().setUnbreakable(true);
+                firstMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                item.setItemMeta(firstMeta);
+            }
 
             if (!config.getString(path + s.toUpperCase() + ".displayName").equalsIgnoreCase("")) {
                 ItemMeta meta = item.getItemMeta();
@@ -132,7 +135,11 @@ public class KitManager {
         int expRequired = FreeForAllPlugin.getInstance().getGameMapManager().getExpMaxRequired(player.getUniqueId(), playerKit);
 
         CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId());
-        player.setExp(user.getKitExp(playerKit).floatValue() / (float) expRequired);
+        if (level >= 100) {
+            player.setExp(.999f);
+        } else {
+            player.setExp(user.getKitExp(playerKit).floatValue() / (float) expRequired);
+        }
 
         player.playSound(player.getLocation(), Sound.NOTE_PIANO, 12, 2);
         player.playSound(player.getLocation(), Sound.NOTE_SNARE_DRUM, 8, 2);

@@ -9,7 +9,6 @@ import net.hybrid.core.commands.admin.KaboomCommand;
 import net.hybrid.core.utility.CC;
 import net.hybrid.core.utility.HybridPlayer;
 import net.hybrid.core.utility.SoundManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -26,12 +25,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class GameMapListener implements Listener {
@@ -101,8 +97,6 @@ public class GameMapListener implements Listener {
                 || cause == EntityDamageEvent.DamageCause.DROWNING
                 || cause == EntityDamageEvent.DamageCause.LIGHTNING
                 || cause == EntityDamageEvent.DamageCause.CONTACT
-                || cause == EntityDamageEvent.DamageCause.FIRE
-                || cause == EntityDamageEvent.DamageCause.FIRE_TICK
                 || cause == EntityDamageEvent.DamageCause.LAVA) {
             event.setCancelled(true);
         }
@@ -200,7 +194,6 @@ public class GameMapListener implements Listener {
     @EventHandler
     public void onLobbyPVPCheck(EntityDamageByEntityEvent event) {
         GameMapManager gameMapManager = FreeForAllPlugin.getInstance().getGameMapManager();
-        Location midLocation = new Location(event.getEntity().getWorld(), 89, 85, 127);
 
         if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
             Player hit = (Player) event.getEntity();
@@ -210,7 +203,11 @@ public class GameMapListener implements Listener {
                 event.setCancelled(true);
             }
 
-            if (hit.getLocation().distance(midLocation) > 75) {
+            if (!gameMapManager.getIsInArena().contains(hit.getUniqueId())) {
+                event.setCancelled(true);
+            }
+
+            if (!gameMapManager.getIsInArena().contains(hit.getUniqueId()) || !gameMapManager.getIsInArena().contains(damage.getUniqueId())) {
                 event.setCancelled(true);
             }
         }
@@ -223,7 +220,11 @@ public class GameMapListener implements Listener {
                 event.setCancelled(true);
             }
 
-            if (hit.getLocation().distance(midLocation) > 75) {
+            if (!gameMapManager.getIsInArena().contains(hit.getUniqueId())) {
+                event.setCancelled(true);
+            }
+
+            if (!gameMapManager.getIsInArena().contains(hit.getUniqueId()) || !gameMapManager.getIsInArena().contains(damage.getUniqueId())) {
                 event.setCancelled(true);
             }
         }
@@ -236,7 +237,28 @@ public class GameMapListener implements Listener {
                 event.setCancelled(true);
             }
 
-            if (hit.getLocation().distance(midLocation) > 75) {
+            if (!gameMapManager.getIsInArena().contains(hit.getUniqueId())) {
+                event.setCancelled(true);
+            }
+
+            if (!gameMapManager.getIsInArena().contains(hit.getUniqueId()) || !gameMapManager.getIsInArena().contains(damage.getUniqueId())) {
+                event.setCancelled(true);
+            }
+        }
+
+        if (event.getEntity() instanceof Player && event.getDamager() instanceof Snowball) {
+            Player hit = (Player) event.getEntity();
+            Player damage = (Player) ((Snowball) event.getDamager()).getShooter();
+
+            if (!gameMapManager.getCurrentKit().containsKey(hit.getUniqueId()) && !gameMapManager.getCurrentKit().containsKey(damage.getUniqueId())) {
+                event.setCancelled(true);
+            }
+
+            if (!gameMapManager.getIsInArena().contains(hit.getUniqueId())) {
+                event.setCancelled(true);
+            }
+
+            if (!gameMapManager.getIsInArena().contains(hit.getUniqueId()) || !gameMapManager.getIsInArena().contains(damage.getUniqueId())) {
                 event.setCancelled(true);
             }
         }
@@ -387,9 +409,51 @@ public class GameMapListener implements Listener {
 
     @EventHandler
     public void sendBowDamageMessage(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+        Player player = (Player) event.getEntity();
+
+        if (event.getDamager() instanceof Player) {
+            Player damager = (Player) event.getDamager();
+
+            if (player.getUniqueId() == damager.getUniqueId()) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        if (event.getDamager() instanceof Arrow) {
+            Player damager = (Player) ((Arrow) event.getDamager()).getShooter();
+
+            if (player.getUniqueId() == damager.getUniqueId()) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        if (event.getDamager() instanceof Snowball) {
+            Player damager = (Player) ((Snowball) event.getDamager()).getShooter();
+
+            if (player.getUniqueId() == damager.getUniqueId()) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        try {
+            if (event.getEntity().getUniqueId() == event.getDamager().getUniqueId()) {
+                event.setCancelled(true);
+                return;
+            }
+        } catch (Exception ignored) {}
+
         if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player) {
             Player hit = (Player) event.getEntity();
             Player shooter = (Player) ((Arrow) event.getDamager()).getShooter();
+
+            if (!FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().contains(hit.getUniqueId()) ||
+                !FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().contains(shooter.getUniqueId())) {
+                return;
+            }
 
             HybridPlayer hybridShooter = new HybridPlayer(shooter.getUniqueId());
             HybridPlayer hybridHit = new HybridPlayer(hit.getUniqueId());

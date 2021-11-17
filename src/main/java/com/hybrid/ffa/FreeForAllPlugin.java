@@ -51,6 +51,7 @@ public class FreeForAllPlugin extends JavaPlugin {
         new SetKitLevel();
         new CheckKillstreakCommand();
         new UploadPlayerDataToConfigCommand();
+        new InArenaDebugCommand();
 
         userManager = new UserManager(this);
         gameMapManager = new GameMapManager();

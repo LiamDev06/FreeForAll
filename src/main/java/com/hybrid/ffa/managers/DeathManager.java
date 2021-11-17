@@ -20,6 +20,7 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -35,10 +36,6 @@ public class DeathManager implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         if (!(event.getFinalDamage() >= ((Player) event.getEntity()).getHealth())) return;
         event.setCancelled(true);
-        if (event.getEntity().getUniqueId() == event.getDamager().getUniqueId()) {
-            event.setCancelled(true);
-            return;
-        }
 
         GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
         FileConfiguration config = FreeForAllPlugin.getInstance().getConfig();
@@ -92,8 +89,9 @@ public class DeathManager implements Listener {
 
         else if (event.getDamager() instanceof Snowball) {
             killer = (Player) ((Snowball) event.getDamager()).getShooter();
+        }
 
-        } else {
+        else {
             hybridDied.sendMessage("&eYou died.");
 
             for (Player target : Bukkit.getOnlinePlayers()) {
@@ -286,6 +284,62 @@ public class DeathManager implements Listener {
 
             killer.setExp(userKiller.getKitExp(kit).floatValue() / (float) expRequired);
             killer.setLevel(userKiller.getKitLevel(kit));
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+        if (!(event.getFinalDamage() >= ((Player) event.getEntity()).getHealth())) return;
+        event.setCancelled(true);
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK || event.getCause() == EntityDamageEvent.DamageCause.FIRE) {
+            final Player died = (Player) event.getEntity();
+            HybridPlayer hybridDied = new HybridPlayer(died.getUniqueId());
+            CachedUser userDied = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(died.getUniqueId());
+
+            hybridDied.sendMessage("&eYou burned to death!");
+            userDied.setDeaths(userDied.getDeaths() + 1);
+
+            died.playSound(died.getLocation(), Sound.ENDERMAN_TELEPORT, 10, -2);
+            died.playSound(died.getLocation(), Sound.ENDERDRAGON_HIT, 10, -1);
+            TitleAPI.sendTitle(died, 20, 20 * 2, 20, "&c&lYOU DIED!", "&bRespawning in &65 &bseconds...");
+            reset(died);
+
+            new BukkitRunnable() {
+                int value = 4;
+
+                @Override
+                public void run() {
+                    if (value == 0) {
+                        respawn(died);
+
+                        this.cancel();
+                        return;
+                    }
+
+                    if (value == 1) {
+                        TitleAPI.clearTitle(died);
+                        TitleAPI.sendTitle(died, 1, 20 * 2, 1, "&c&lYOU DIED!", "&bRespawning in &6" + value + " &bsecond...");
+                    } else {
+                        TitleAPI.clearTitle(died);
+                        TitleAPI.sendTitle(died, 1, 20 * 2, 1, "&c&lYOU DIED!", "&bRespawning in &6" + value + " &bseconds...");
+                    }
+
+                    died.playSound(died.getLocation(), Sound.CLICK, 10, 3);
+                    value--;
+                }
+
+            }.runTaskTimer(FreeForAllPlugin.getInstance(), 20, 20);
+
+            for (Player target : Bukkit.getOnlinePlayers()) {
+                if (target.getUniqueId() != died.getUniqueId()) {
+                    target.sendMessage(CC.translate(
+                            hybridDied.getRankManager().getRank().getPrefixSpace() + died.getName() +
+                                    " &eburned to death."
+                    ));
+                }
+            }
         }
     }
 
