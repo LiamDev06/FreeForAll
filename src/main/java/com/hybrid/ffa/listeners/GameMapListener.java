@@ -125,6 +125,7 @@ public class GameMapListener implements Listener {
     @EventHandler
     public void onLobbyEnterCheck(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        HybridPlayer hybridPlayer = new HybridPlayer(player.getUniqueId());
         GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
         Location midLocation = new Location(player.getWorld(), 89, 85, 127);
 
@@ -178,7 +179,11 @@ public class GameMapListener implements Listener {
                     noEnterMessage.remove(player.getUniqueId());
                     noEnterMessage.add(player.getUniqueId());
 
-                    player.sendMessage(CC.translate("&c&lNO KIT SELECTED! &cYou need to select a kit before entering the arena!"));
+                    hybridPlayer.sendMessage("&c&lNO KIT SELECTED! &cYou need to select a kit before entering the arena.");
+
+                    if (hybridPlayer.getRankManager().isAdmin()) {
+                       hybridPlayer.sendMessage("&cTo bypass this, toggle on build mode with &6/buildmode&c.");
+                    }
 
                     new BukkitRunnable() {
 

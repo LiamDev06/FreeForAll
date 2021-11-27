@@ -76,7 +76,7 @@ public class BountySystem {
                             GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
 
                             for (Player target : world.getPlayers()) {
-                                if (hasBounty(target) || !manager.getIsInArena().contains(target.getUniqueId())) {
+                                if (hasBounty(target) || !manager.getIsInArena().contains(target.getUniqueId()) || !manager.getCurrentKit().containsKey(target.getUniqueId())) {
                                     list.remove(target);
                                 }
                             }
