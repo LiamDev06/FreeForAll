@@ -1,8 +1,8 @@
 package com.hybrid.ffa.commands;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.utils.LocationUtil;
+import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.menus.ChangeSpawnMenu;
 import net.hybrid.core.utility.CC;
 import net.hybrid.core.utility.PlayerCommand;

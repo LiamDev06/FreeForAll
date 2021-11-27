@@ -6,6 +6,7 @@ import net.hybrid.core.utility.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -71,9 +72,11 @@ public class UserManager {
     }
 
     public void offLoadPlayersFromCache() {
-        for (UUID uuid : cachedUsers.keySet()) {
-            offLoadPlayerFromCache(uuid);
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            offLoadPlayerFromCache(online.getUniqueId());
         }
+
+        cachedUsers.keySet().forEach(this::offLoadPlayerFromCache);
     }
 
     public void loadPlayerToCache(UUID uuid) {

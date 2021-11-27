@@ -33,7 +33,6 @@ public class ScoreboardManager {
 
     public static void start(Player player) {
         taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(FreeForAllPlugin.getInstance(), new Runnable() {
-
             final UUID uuid = player.getUniqueId();
             int count = 0;
             final int max = 49;
@@ -43,8 +42,12 @@ public class ScoreboardManager {
 
             @Override
             public void run() {
-                if (!hasId(uuid) && player != null) {
-                    setId(uuid, taskId);
+                if (player == null) {
+                    return;
+                }
+
+                if (!hasId(player.getUniqueId()) && player.isOnline()) {
+                    setId(player.getUniqueId(), taskId);
                 }
 
                 if (count == max) {

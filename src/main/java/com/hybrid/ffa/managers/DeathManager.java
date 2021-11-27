@@ -2,10 +2,11 @@ package com.hybrid.ffa.managers;
 
 import com.connorlinfoot.titleapi.TitleAPI;
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.CachedUser;
+import com.hybrid.ffa.bounty.BountySystem;
 import com.hybrid.ffa.utils.HotbarItems;
 import com.hybrid.ffa.utils.LocationUtil;
 import com.hybrid.ffa.utils.PlayerKit;
+import com.hybrid.ffa.data.CachedUser;
 import net.hybrid.core.utility.CC;
 import net.hybrid.core.utility.HybridPlayer;
 import net.hybrid.core.utility.actionbar.ActionbarAPI;
@@ -39,6 +40,7 @@ public class DeathManager implements Listener {
 
         GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
         FileConfiguration config = FreeForAllPlugin.getInstance().getConfig();
+        BountySystem bountySystem = FreeForAllPlugin.getInstance().getBountySystem();
 
         final Player died = (Player) event.getEntity();
         HybridPlayer hybridDied = new HybridPlayer(died.getUniqueId());
@@ -109,6 +111,28 @@ public class DeathManager implements Listener {
         CachedUser userKiller = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(killer.getUniqueId());
         PlayerKit kit = manager.getCurrentKit().get(killer.getUniqueId());
         String hybridAdd = "&2[HYBRID] &7+&a10EXP &2for kill in FFA!";
+        boolean shouldSendAll = true;
+
+        if (bountySystem.hasBounty(died)) {
+            for (Player target : died.getWorld().getPlayers()) {
+                if (target.getUniqueId() != died.getUniqueId() && target.getUniqueId() != killer.getUniqueId()) {
+                    target.sendMessage(CC.translate("&6&lBOUNTY DEAD! " + hybridKiller.getRankManager().getRank().getPrefixSpace() + killer.getName() + " &edestroyed " + hybridDied.getRankManager().getRank().getPrefixSpace() + died.getName() + " &eand won the bounty!"));
+                }
+            }
+
+            shouldSendAll = false;
+            int coinsAdd = 500;
+            int expAdd = 1000;
+
+            userKiller.addKitExp(manager.getCurrentKit().get(userKiller.getUuid()), expAdd);
+            userKiller.setLifetimeExp(userKiller.getLifetimeExp() + expAdd);
+            userKiller.addCoins(coinsAdd);
+            killer.playSound(killer.getLocation(), Sound.ENDERDRAGON_GROWL, 13, 1);
+
+            died.sendMessage(CC.translate("&c&lBOUNTY LOST! &cYou were killed while on bounty, better luck next time..."));
+            killer.sendMessage(CC.translate("&6&lBOUNTY KILLED! &eYou killed the bounty. &7[&6+" + coinsAdd + " COINS &8- &b+" + expAdd + "EXP&7]"));
+            bountySystem.getBountyCache().remove(died.getUniqueId());
+        }
 
         if (manager.getKillStreak().containsKey(died.getUniqueId()) && manager.getKillStreak().get(died.getUniqueId()) > 0) {
             hybridDied.sendMessage("&8>> &7You lost a &6" + manager.getKillStreak().get(died.getUniqueId()) + " &7killstreak due to " + hybridKiller.getRankManager().getRank().getColor() + killer.getName() + "&7!");
@@ -219,7 +243,7 @@ public class DeathManager implements Listener {
             userKiller.addLifetimeExp(addExp);
         }
 
-        if (event.getDamager() instanceof Player) {
+        if (event.getDamager() instanceof Player && shouldSendAll) {
             hybridKiller.sendMessage("&eYou killed " + hybridDied.getRankManager().getRank().getPrefixSpace() + died.getName() +
                     addText);
             hybridKiller.sendMessage(hybridAdd);
@@ -235,7 +259,7 @@ public class DeathManager implements Listener {
             }
         }
 
-        if (event.getDamager() instanceof Arrow) {
+        if (event.getDamager() instanceof Arrow && shouldSendAll) {
             hybridKiller.sendMessage("&eYou shot " + hybridDied.getRankManager().getRank().getPrefixSpace() + died.getName() + " &eto death!" + addText);
             hybridKiller.sendMessage(hybridAdd);
             hybridDied.sendMessage(hybridKiller.getRankManager().getRank().getPrefixSpace() + killer.getName() + "&e shot you to death using a bow!");
@@ -250,7 +274,7 @@ public class DeathManager implements Listener {
             }
         }
 
-        if (event.getDamager() instanceof Snowball) {
+        if (event.getDamager() instanceof Snowball && shouldSendAll) {
             hybridKiller.sendMessage("&eYou snowballed " + hybridDied.getRankManager().getRank().getPrefixSpace() + died.getName() + " &eto death!" + addText);
             hybridKiller.sendMessage(hybridAdd);
             hybridDied.sendMessage(hybridKiller.getRankManager().getRank().getPrefixSpace() + killer.getName() + "&e snowballed you to death with a snowball, lol!");
@@ -393,21 +417,31 @@ public class DeathManager implements Listener {
             died.removePotionEffect(effect.getType());
         }
 
-        died.teleport(LocationUtil.readLocation(
-                FreeForAllPlugin.getInstance().getConfig().getConfigurationSection(
-                        "spawnLocations." + FreeForAllPlugin.getInstance().getGameMapManager().getSpawnLocation().get(died.getUniqueId()) + "Loc"
-                )));
+        GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
+        FileConfiguration config = FreeForAllPlugin.getInstance().getConfig();
+
+        if (manager.getRegionSpawnLock().equalsIgnoreCase("RESET")) {
+            died.teleport(LocationUtil.readLocation(
+                    config.getConfigurationSection(
+                            "spawnLocations." + manager.getSpawnLocation().get(died.getUniqueId()) + "Loc"
+                    )));
+        } else {
+            String newLocation = manager.getRegionSpawnLock();
+
+            died.teleport(LocationUtil.readLocation(
+                    config.getConfigurationSection("spawnLocations." + newLocation + "Loc")));
+            manager.getSpawnLocation().replace(died.getUniqueId(), newLocation);
+        }
 
         died.setGameMode(GameMode.ADVENTURE);
-
-        FreeForAllPlugin.getInstance().getGameMapManager().getCurrentKit().remove(died.getUniqueId());
+        manager.getCurrentKit().remove(died.getUniqueId());
 
         died.getInventory().setItem(0, HotbarItems.getKitSelector());
         died.getInventory().setItem(1, HotbarItems.getProfile(died));
         died.getInventory().setItem(2, HotbarItems.getCosmetics());
         died.getInventory().setItem(8, HotbarItems.changeLocation());
 
-        if (FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().containsKey(died.getUniqueId())) {
+        if (manager.getLastKitUsed().containsKey(died.getUniqueId())) {
             died.getInventory().setItem(4, HotbarItems.getLastKit(died));
         }
     }

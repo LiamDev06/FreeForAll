@@ -1,10 +1,11 @@
 package com.hybrid.ffa.listeners;
 
-import com.hybrid.ffa.managers.GameMapManager;
-import com.hybrid.ffa.utils.LocationUtil;
-import com.hybrid.ffa.managers.ScoreboardManager;
 import com.hybrid.ffa.FreeForAllPlugin;
+import com.hybrid.ffa.bounty.BountySystem;
 import com.hybrid.ffa.utils.HotbarItems;
+import com.hybrid.ffa.utils.LocationUtil;
+import com.hybrid.ffa.managers.GameMapManager;
+import com.hybrid.ffa.managers.ScoreboardManager;
 import net.hybrid.core.utility.CC;
 import net.hybrid.core.utility.ScoreHelper;
 import org.bukkit.GameMode;
@@ -78,6 +79,17 @@ public class JoinLeaveListener implements Listener {
             }
         }.runTaskLater(FreeForAllPlugin.getInstance(), 20);
 
+        GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
+        manager.getSpawnLocation().remove(player.getUniqueId());
+        manager.getKillStreak().put(player.getUniqueId(), 0);
+
+        if (!manager.getRegionSpawnLock().equalsIgnoreCase("RESET")) {
+            player.teleport(LocationUtil.readLocation(FreeForAllPlugin.getInstance().getConfig().getConfigurationSection("spawnLocations." +
+                    manager.getRegionSpawnLock() + "Loc")));
+            manager.getSpawnLocation().put(player.getUniqueId(),manager.getRegionSpawnLock());
+            return;
+        }
+
         List<Location> spawnLocations = new ArrayList<>();
         spawnLocations.add(LocationUtil.readLocation(FreeForAllPlugin.getInstance().getConfig().getConfigurationSection("spawnLocations.desertLoc")));
         spawnLocations.add(LocationUtil.readLocation(FreeForAllPlugin.getInstance().getConfig().getConfigurationSection("spawnLocations.jungleLoc")));
@@ -89,10 +101,6 @@ public class JoinLeaveListener implements Listener {
         Location spawnLocation = spawnLocations.get(pos);
 
         player.teleport(spawnLocation);
-
-        GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
-        manager.getSpawnLocation().remove(player.getUniqueId());
-        manager.getKillStreak().put(player.getUniqueId(), 0);
 
         if (pos == 0) {
             player.sendMessage(CC.translate("&8&m---------------------------------------------------------"));
@@ -128,13 +136,33 @@ public class JoinLeaveListener implements Listener {
         event.setQuitMessage(null);
         final UUID uuid = event.getPlayer().getUniqueId();
 
+        if (ScoreboardManager.hasId(event.getPlayer().getUniqueId())) {
+            ScoreboardManager.stop(event.getPlayer().getUniqueId());
+        }
+
+        if (ScoreHelper.hasScore(event.getPlayer())) {
+            ScoreHelper.removeScore(event.getPlayer());
+        }
+
         FreeForAllPlugin.getInstance().getUserManager().offLoadPlayerFromCache(event.getPlayer().getUniqueId());
 
-        FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().remove(uuid);
-        FreeForAllPlugin.getInstance().getGameMapManager().getLastKitUsed().remove(uuid);
-        FreeForAllPlugin.getInstance().getGameMapManager().getKillStreak().remove(uuid);
-        FreeForAllPlugin.getInstance().getGameMapManager().getCurrentKit().remove(uuid);
-        FreeForAllPlugin.getInstance().getGameMapManager().getSpawnLocation().remove(uuid);
+        GameMapManager manager = FreeForAllPlugin.getInstance().getGameMapManager();
+        manager.getIsInArena().remove(uuid);
+        manager.getLastKitUsed().remove(uuid);
+        manager.getKillStreak().remove(uuid);
+        manager.getCurrentKit().remove(uuid);
+        manager.getSpawnLocation().remove(uuid);
+
+        BountySystem bountySystem = FreeForAllPlugin.getInstance().getBountySystem();
+        if (bountySystem.hasBounty(event.getPlayer())) {
+            bountySystem.bountyExpired(event.getPlayer());
+        }
+
+        bountySystem.getBountyCache().remove(uuid);
+        if (BountySystem.stands.containsKey(uuid)) {
+            BountySystem.stands.get(uuid).remove();
+            BountySystem.stands.remove(uuid);
+        }
 
         if (ScoreboardManager.hasId(event.getPlayer().getUniqueId())) {
             ScoreboardManager.stop(event.getPlayer().getUniqueId());

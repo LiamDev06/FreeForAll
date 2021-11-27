@@ -51,15 +51,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../Minecraft Coding/Dependencies/ActionBarAPI.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../HybridCore/target/HybridCorePlugin-0.1.0.jar!/" />
         </CLASSES>
         <JAVADOC />

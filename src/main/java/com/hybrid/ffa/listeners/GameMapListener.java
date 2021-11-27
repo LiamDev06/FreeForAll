@@ -1,14 +1,15 @@
 package com.hybrid.ffa.listeners;
 
 import com.hybrid.ffa.FreeForAllPlugin;
+import com.hybrid.ffa.utils.LocationUtil;
 import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.managers.GameMapManager;
 import com.hybrid.ffa.utils.HotbarItems;
-import com.hybrid.ffa.utils.LocationUtil;
 import net.hybrid.core.commands.admin.KaboomCommand;
 import net.hybrid.core.utility.CC;
 import net.hybrid.core.utility.HybridPlayer;
 import net.hybrid.core.utility.SoundManager;
+import net.hybrid.core.utility.actionbar.ActionbarAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -33,6 +34,7 @@ import java.util.UUID;
 public class GameMapListener implements Listener {
 
     private final ArrayList<UUID> noEnterMessage = new ArrayList<>();
+    private final ArrayList<UUID> noEnterMessageBackIn = new ArrayList<>();
     private static ArrayList<Material> disableInteract;
 
     @EventHandler
@@ -146,6 +148,17 @@ public class GameMapListener implements Listener {
             SoundManager.playSound(player, "ENDERMAN_TELEPORT");
         }
 
+        if (player.getLocation().getBlockY() >= 88) {
+            manager.getIsInArena().remove(player.getUniqueId());
+        }
+
+        if (player.getLocation().getBlockY() < 88) {
+            if (!manager.getIsInArena().contains(player.getUniqueId())) {
+                manager.getIsInArena().add(player.getUniqueId());
+            }
+        }
+
+        /* Old Methods for checking if in arena
         if (player.getLocation().distance(midLocation) > 75) {
             manager.getIsInArena().remove(player.getUniqueId());
         }
@@ -155,6 +168,7 @@ public class GameMapListener implements Listener {
                 manager.getIsInArena().add(player.getUniqueId());
             }
         }
+         */
 
         if (!inBuild(player) && !manager.getCurrentKit().containsKey(player.getUniqueId())) {
             if (player.getLocation().distance(midLocation) < 76) {
@@ -408,7 +422,7 @@ public class GameMapListener implements Listener {
     }
 
     @EventHandler
-    public void sendBowDamageMessage(EntityDamageByEntityEvent event) {
+    public void sendDamageMessage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
 
@@ -445,6 +459,41 @@ public class GameMapListener implements Listener {
                 return;
             }
         } catch (Exception ignored) {}
+
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+            Player hit = (Player) event.getEntity();
+            Player damager = (Player) event.getDamager();
+
+            if (!FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().contains(hit.getUniqueId()) ||
+                !FreeForAllPlugin.getInstance().getGameMapManager().getIsInArena().contains(damager.getUniqueId())) {
+                return;
+            }
+
+            if (event.getFinalDamage() >= hit.getHealth()) {
+                return;
+            }
+
+            HybridPlayer hybridPlayer = new HybridPlayer(hit.getUniqueId());
+            StringBuilder builder = new StringBuilder().append(hybridPlayer.getColoredName()).append(" ");
+
+            new BukkitRunnable() {
+                int count = ((int) player.getHealthScale() / 2);
+
+                @Override
+                public void run() {
+                    for (int i = 0; i<(hit.getHealth() / 2); i++) {
+                        builder.append("§4❤");
+                        count--;
+                    }
+
+                    for (int i = 0; i<count; i++) {
+                        builder.append("§7❤");
+                    }
+
+                    ActionbarAPI.sendActionBar(damager, builder.toString());
+                }
+            }.runTaskLater(FreeForAllPlugin.getInstance(), 5);
+        }
 
         if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player) {
             Player hit = (Player) event.getEntity();

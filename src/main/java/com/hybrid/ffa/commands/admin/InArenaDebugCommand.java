@@ -32,9 +32,9 @@ public class InArenaDebugCommand extends PlayerCommand {
 
         if (target != null) {
             if (manager.getIsInArena().contains(target.getUniqueId())) {
-                hybridPlayer.sendMessage("&eThis player is currently &a&lIN THE ARENA&e.");
+                hybridPlayer.sendMessage("&c[ADMIN DEBUG] &6This player is currently &a&lIN THE ARENA&6.");
             } else {
-                hybridPlayer.sendMessage("&eThis player is currently &c&lNOT IN THE ARENA&e.");
+                hybridPlayer.sendMessage("&c[ADMIN DEBUG] &6This player is currently &c&lNOT IN THE ARENA&6.");
             }
 
         } else {

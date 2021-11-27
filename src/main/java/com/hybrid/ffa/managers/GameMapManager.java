@@ -50,6 +50,23 @@ public class GameMapManager {
         return currentKit;
     }
 
+    public void setRegionSpawnLock(String region) {
+        FileConfiguration config = FreeForAllPlugin.getInstance().getConfig();
+        config.set("settings.lockedRegion", region);
+        FreeForAllPlugin.getInstance().saveConfig();
+    }
+
+    public void resetRegionSpawnLock() {
+        FileConfiguration config = FreeForAllPlugin.getInstance().getConfig();
+        config.set("settings.lockedRegion", "RESET");
+        FreeForAllPlugin.getInstance().saveConfig();
+    }
+
+    public String getRegionSpawnLock() {
+        FileConfiguration config = FreeForAllPlugin.getInstance().getConfig();
+        return config.getString("settings.lockedRegion");
+    }
+
     public int getExpMaxRequired(UUID uuid, PlayerKit playerKit) {
         CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(uuid);
         int level = user.getKitLevel(playerKit);
@@ -63,7 +80,6 @@ public class GameMapManager {
     public HashMap<UUID, String> getSpawnLocation() {
         return spawnLocation;
     }
-
 
     public static int getClosestLevelUp(int levelFrom) {
         if (levelFrom == 100) {

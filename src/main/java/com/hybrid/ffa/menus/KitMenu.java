@@ -1,9 +1,9 @@
 package com.hybrid.ffa.menus;
 
+import com.hybrid.ffa.utils.PlayerKit;
 import com.hybrid.ffa.FreeForAllPlugin;
 import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.managers.GameMapManager;
-import com.hybrid.ffa.utils.PlayerKit;
 import net.hybrid.core.utility.CC;
 import net.hybrid.core.utility.ItemBuilder;
 import org.bukkit.Bukkit;

@@ -1,15 +1,14 @@
 package com.hybrid.ffa.managers;
 
 import com.hybrid.ffa.FreeForAllPlugin;
-import com.hybrid.ffa.data.CachedUser;
 import com.hybrid.ffa.utils.PlayerKit;
+import com.hybrid.ffa.data.CachedUser;
 import net.hybrid.core.utility.CC;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
