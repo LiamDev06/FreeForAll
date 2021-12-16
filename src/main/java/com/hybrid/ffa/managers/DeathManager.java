@@ -304,7 +304,7 @@ public class DeathManager implements Listener {
             killer.setLevel(100);
 
         } else {
-            int expRequired = FreeForAllPlugin.getInstance().getGameMapManager().getExpMaxRequired(killer.getUniqueId(), kit);
+            int expRequired = manager.getExpMaxRequired(killer.getUniqueId(), kit);
 
             killer.setExp(userKiller.getKitExp(kit).floatValue() / (float) expRequired);
             killer.setLevel(userKiller.getKitLevel(kit));

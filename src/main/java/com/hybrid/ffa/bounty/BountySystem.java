@@ -188,7 +188,7 @@ public class BountySystem {
 
     public void bountyExpired(Player player) {
         HybridPlayer hybridPlayer = new HybridPlayer(player.getUniqueId());
-        CachedUser user = new CachedUser(player.getUniqueId());
+        CachedUser user = FreeForAllPlugin.getInstance().getUserManager().getCachedUser(player.getUniqueId());
 
         for (Player target : player.getWorld().getPlayers()) {
             if (target.getUniqueId() != player.getUniqueId()) {
@@ -216,6 +216,17 @@ public class BountySystem {
                 user.resetExp(kit);
                 user.setKitLevel(kit, (user.getKitLevel(kit) + 1));
             }
+        }
+
+        if (user.getKitLevel(kit) >= 100) {
+            player.setExp(0.9999f);
+            player.setLevel(100);
+
+        } else {
+            int expRequired = manager.getExpMaxRequired(player.getUniqueId(), kit);
+
+            player.setExp(user.getKitExp(kit).floatValue() / (float) expRequired);
+            player.setLevel(user.getKitLevel(kit));
         }
 
         bountyCache.remove(player.getUniqueId());
